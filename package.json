@@ -29,6 +29,7 @@
     "electron": "32.2.0",
     "eslint": "^8.0.1",
     "eslint-plugin-import": "^2.25.0",
+    "sass": "^1.79.5",
     "ts-node": "^10.0.0",
     "typescript": "~4.5.4",
     "vite": "^5.0.12"
@@ -40,6 +41,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@tiptap/extension-color": "^2.8.0",
+    "@tiptap/extension-list-item": "^2.8.0",
+    "@tiptap/extension-text-style": "^2.8.0",
     "@tiptap/pm": "^2.8.0",
     "@tiptap/react": "^2.8.0",
     "@tiptap/starter-kit": "^2.8.0",
