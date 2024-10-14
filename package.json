@@ -40,6 +40,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@tiptap/pm": "^2.8.0",
+    "@tiptap/react": "^2.8.0",
+    "@tiptap/starter-kit": "^2.8.0",
     "@vitejs/plugin-react": "^4.3.2",
     "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",

@@ -1,10 +1,10 @@
 import React from 'react';
+import Tiptap from './Tiptap';
 
 const App: React.FC = () => {
   return (
     <div>
-      <h1>💖 Hello World!</h1>
-      <p>Welcome to your Electron application with React.</p>
+      <Tiptap />
     </div>
   );
 };
