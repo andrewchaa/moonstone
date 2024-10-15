@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { PlusCircle, X } from 'lucide-react'
+import Tiptap from '@/Tiptap'
 
 interface Tab {
   id: string
@@ -72,12 +72,16 @@ export default function MultiTabEditor() {
         </div>
         {tabs.map(tab => (
           <TabsContent key={tab.id} value={tab.id} className="mt-0">
-            <Textarea
+            <Tiptap
+              htmlContent={tab.content}
+              handleUpdate={(content) => updateTabContent(tab.id, content)}
+            />
+            {/* <Textarea
               value={tab.content}
               onChange={(e) => updateTabContent(tab.id, e.target.value)}
               placeholder="Start typing here..."
               className="min-h-[300px] resize-y"
-            />
+            />*/}
           </TabsContent>
         ))}
       </Tabs>
