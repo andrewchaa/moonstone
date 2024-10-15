@@ -9,6 +9,8 @@ import { EditorProvider, useCurrentEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React from 'react'
 
+import { Button } from '@/components/Button'
+
 const MenuBar = () => {
   const { editor } = useCurrentEditor()
 
