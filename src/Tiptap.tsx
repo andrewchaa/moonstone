@@ -6,8 +6,9 @@ import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import { Markdown } from 'tiptap-markdown'
-import { EditorProvider } from '@tiptap/react'
+import { EditorContent, EditorProvider, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import { useEffect } from 'react'
 
 
 const extensions = [
@@ -34,14 +35,44 @@ type Props = {
 }
 
 const Tiptap = ({ content, handleUpdate }: Props) => {
+  const editor = useEditor({
+    extensions,
+    content,
+    onDestroy: (props) => {
+      console.log('destroyed', props)
+    },
+    onBlur(props) {
+      console.log('blur', props)
+      handleUpdate(props.editor.getHTML())
+    },
+    onFocus(props) {
+      console.log('focus', props)
+    },
+    onBeforeCreate(props) {
+      console.log('before create', props)
+    },
+    onCreate(props) {
+      console.log('create', props)
+    },
+    onUpdate: (props) => {
+      console.log('update', props)
+    }
+  })
+
+  useEffect(() => {
+    editor?.commands.setContent(content)
+  }, [content])
+
   return (
     <div className="tiptap">
-      <EditorProvider
+      <EditorContent editor={editor} />
+
+      {/* <EditorProvider
         onUpdate={
           ({ editor }) => { handleUpdate(editor.getHTML()) }}
         extensions={extensions}
         content={content}
-      ></EditorProvider>
+      ></EditorProvider> */}
     </div>
   )
 }

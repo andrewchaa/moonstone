@@ -108,12 +108,6 @@ export default function MultiTabEditor() {
               content={tab.content}
               handleUpdate={(contentUpdate) => updateTabContent(tab.id, contentUpdate)}
             />
-            {/* <Textarea
-              value={tab.content}
-              onChange={(e) => updateTabContent(tab.id, e.target.value)}
-              placeholder="Start typing here..."
-              className="min-h-[300px] resize-y"
-            />*/}
           </TabsContent>
         ))}
       </Tabs>
