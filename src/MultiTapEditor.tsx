@@ -5,11 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { PlusCircle, X } from 'lucide-react'
 import Tiptap from '@/Tiptap'
+import { Selection } from '@tiptap/pm/state'
 
 interface Tab {
   id: string
   title: string
   content: string
+  selection?: Selection | null
 }
 
 const initialContent = `
@@ -46,7 +48,7 @@ const initialContent = `
 
 export default function MultiTabEditor() {
   const [tabs, setTabs] = useState<Tab[]>([
-    { id: '1', title: 'Tab 1', content: '' }
+    { id: '1', title: 'Tab 1', content: '', selection: null }
   ])
   const [activeTab, setActiveTab] = useState('1')
 
@@ -68,9 +70,13 @@ export default function MultiTabEditor() {
     }
   }
 
-  const updateTabContent = (tabId: string, newContent: string) => {
+  const updateTabState = (
+    tabId: string,
+    content: string,
+    selection?: Selection | null
+  ) => {
     setTabs(tabs.map(tab =>
-      tab.id === tabId ? { ...tab, content: newContent } : tab
+      tab.id === tabId ? { ...tab, content, selection } : tab
     ))
   }
 
@@ -106,7 +112,12 @@ export default function MultiTabEditor() {
           <TabsContent key={tab.id} value={tab.id} className="mt-0">
             <Tiptap
               content={tab.content}
-              handleUpdate={(contentUpdate) => updateTabContent(tab.id, contentUpdate)}
+              selection={tab.selection}
+              handleUpdate={(content, selection) => updateTabState(
+                tab.id,
+                content,
+                selection
+              )}
             />
           </TabsContent>
         ))}

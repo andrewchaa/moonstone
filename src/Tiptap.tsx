@@ -6,10 +6,10 @@ import TextStyle from '@tiptap/extension-text-style'
 import Highlight from '@tiptap/extension-highlight'
 import Typography from '@tiptap/extension-typography'
 import { Markdown } from 'tiptap-markdown'
-import { EditorContent, EditorProvider, useEditor } from '@tiptap/react'
+import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
-
+import { Selection } from '@tiptap/pm/state'
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -31,10 +31,14 @@ const extensions = [
 
 type Props = {
   content: string
-  handleUpdate: (content: string) => void
+  selection?: Selection | null
+  handleUpdate: (
+    content: string,
+    selection: Selection | null
+  ) => void
 }
 
-const Tiptap = ({ content, handleUpdate }: Props) => {
+const Tiptap = ({ content, selection, handleUpdate }: Props) => {
   const editor = useEditor({
     extensions,
     content,
@@ -43,7 +47,7 @@ const Tiptap = ({ content, handleUpdate }: Props) => {
     },
     onBlur(props) {
       console.log('blur', props)
-      handleUpdate(props.editor.getHTML())
+      handleUpdate(props.editor.getHTML(), props.editor.state.selection)
     },
     onFocus(props) {
       console.log('focus', props)
@@ -60,19 +64,20 @@ const Tiptap = ({ content, handleUpdate }: Props) => {
   })
 
   useEffect(() => {
-    editor?.commands.setContent(content)
-  }, [content])
+    if (editor) {
+      editor.commands.focus()
+      editor.commands.setContent(content)
+
+      if (selection) {
+        editor.commands.setTextSelection(selection)
+      }
+    }
+
+  }, [content, editor, selection])
 
   return (
     <div className="tiptap">
       <EditorContent editor={editor} />
-
-      {/* <EditorProvider
-        onUpdate={
-          ({ editor }) => { handleUpdate(editor.getHTML()) }}
-        extensions={extensions}
-        content={content}
-      ></EditorProvider> */}
     </div>
   )
 }
