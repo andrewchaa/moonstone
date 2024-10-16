@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -7,8 +5,9 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { PlusCircle, X, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Selection } from '@tiptap/pm/state'
 import Tiptap from '@/editor/Tiptap'
+import EditorSidebar from '@/editor/EditorSidebar'
 
-interface Tab {
+export interface EditorTab {
   id: string
   title: string
   content: string
@@ -16,12 +15,12 @@ interface Tab {
 }
 
 export default function MultiTabTextEditor() {
-  const [tabs, setTabs] = useState<Tab[]>([])
+  const [tabs, setTabs] = useState<EditorTab[]>([])
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const addTab = () => {
-    const newTab: Tab = {
+    const newTab: EditorTab = {
       id: Date.now().toString(),
       title: `Untitled ${tabs.length + 1}`,
       content: ''
@@ -56,31 +55,14 @@ export default function MultiTabTextEditor() {
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 flex">
-      {/* Sidebar */}
-      <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64 mr-4' : 'w-0 mr-0'}`}>
-        {isSidebarOpen && (
-          <div className="border rounded-lg p-4 h-full flex flex-col">
-            <h2 className="text-lg font-semibold mb-4">Files</h2>
-            <ScrollArea className="flex-grow mb-4">
-              {tabs.map(tab => (
-                <Button
-                  key={tab.id}
-                  variant={activeTab === tab.id ? "secondary" : "ghost"}
-                  className="w-full justify-start mb-2"
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  {tab.title}
-                </Button>
-              ))}
-            </ScrollArea>
-            <Button onClick={addTab} className="w-full justify-start">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              New File
-            </Button>
-          </div>
-        )}
-      </div>
+
+      <EditorSidebar
+        isSidebarOpen={isSidebarOpen}
+        tabs={tabs}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        addTab={addTab}
+      />
 
       {/* Main content */}
       <div className="flex-grow">
