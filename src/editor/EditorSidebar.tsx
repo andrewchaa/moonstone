@@ -3,23 +3,25 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { PlusCircle, FileText, Folder } from 'lucide-react'
 import { EditorTab } from '@/editor/MultiTabTextEditor'
 import { useState } from "react"
+import { set } from "date-fns"
 
 type Props = {
   isSidebarOpen: boolean
   tabs: EditorTab[]
+  setTabs: (tabs: EditorTab[]) => void
   activeTab: string | null
   setActiveTab: (tabId: string) => void
-  addTab: () => void
+  addTab: (title?: string) => void
 }
 
 const EditorSidebar = ({
   isSidebarOpen,
   tabs,
+  setTabs,
   activeTab,
   setActiveTab,
   addTab,
 }: Props) => {
-  const [filenames, setFilenames] = useState<string[]>([])
 
   return (
     <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64 mr-4' : 'w-0 mr-0'}`}>
@@ -39,14 +41,23 @@ const EditorSidebar = ({
             </Button>
           ))}
         </ScrollArea>
-        <Button onClick={addTab} className="w-full justify-start">
+        <Button onClick={() => addTab()} className="w-full justify-start">
           <PlusCircle className="h-4 w-4 mr-2" /> New File
         </Button>
         <Button
           onClick={async () => {
             const [directoryPath, files] = await window.electronAPI.openDirectorySelector()
             console.log('files', directoryPath, files)
-            setFilenames(files)
+            // setTabs([])
+            const tabs = files
+              .filter((file: string) => !file.startsWith('.'))
+              .map((file: string) => ({
+                id: file,
+                title: file,
+                content: ''
+              }))
+            setTabs(tabs)
+            setActiveTab(tabs[0].id)
           }}
           className="w-full justify-start"
         >

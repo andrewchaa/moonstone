@@ -61,6 +61,7 @@ export default function MultiTabTextEditor() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         addTab={addTab}
+        setTabs={setTabs}
       />
 
       {/* Main content */}
