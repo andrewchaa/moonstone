@@ -1,6 +1,5 @@
 import React from 'react';
-import Tiptap from './Tiptap';
-import MultiTabEditor from './MultiTapEditor';
+import MultiTabEditor from './editor/MultiTapEditor';
 
 const App: React.FC = () => {
   return (
