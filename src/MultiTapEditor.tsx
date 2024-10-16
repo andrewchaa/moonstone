@@ -3,9 +3,11 @@
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, X } from 'lucide-react'
-import Tiptap from '@/Tiptap'
+import { Textarea } from "@/components/ui/textarea"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { PlusCircle, X, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Selection } from '@tiptap/pm/state'
+import Tiptap from '@/Tiptap'
 
 interface Tab {
   id: string
@@ -14,48 +16,15 @@ interface Tab {
   selection?: Selection | null
 }
 
-const initialContent = `
-<h2>
-  Hi there,
-</h2>
-<p>
-  this is a <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-</p>
-<ul>
-  <li>
-    That’s a bullet list with one …
-  </li>
-  <li>
-    … or two list items.
-  </li>
-</ul>
-<p>
-  Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-</p>
-<pre><code class="language-css">body {
-  display: none;
-}</code></pre>
-<p>
-  I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-</p>
-<blockquote>
-  Wow, that’s amazing. Good work, boy! 👏
-  <br />
-  — Mom
-</blockquote>
-`
-
-
-export default function MultiTabEditor() {
-  const [tabs, setTabs] = useState<Tab[]>([
-    { id: '1', title: 'Tab 1', content: '', selection: null }
-  ])
-  const [activeTab, setActiveTab] = useState('1')
+export default function MultiTabTextEditor() {
+  const [tabs, setTabs] = useState<Tab[]>([])
+  const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const addTab = () => {
     const newTab: Tab = {
       id: Date.now().toString(),
-      title: `Tab ${tabs.length + 1}`,
+      title: `Untitled ${tabs.length + 1}`,
       content: ''
     }
     setTabs([...tabs, newTab])
@@ -67,10 +36,12 @@ export default function MultiTabEditor() {
     setTabs(newTabs)
     if (activeTab === tabId && newTabs.length > 0) {
       setActiveTab(newTabs[newTabs.length - 1].id)
+    } else if (newTabs.length === 0) {
+      setActiveTab(null)
     }
   }
 
-  const updateTabState = (
+  const updateTabContent = (
     tabId: string,
     content: string,
     selection?: Selection | null
@@ -80,48 +51,88 @@ export default function MultiTabEditor() {
     ))
   }
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen)
+  }
+
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="flex items-center justify-between mb-4">
-          <TabsList>
-            {tabs.map(tab => (
-              <TabsTrigger key={tab.id} value={tab.id} className="flex items-center">
-                {tab.title}
+    <div className="w-full max-w-6xl mx-auto p-4 flex">
+      {/* Sidebar */}
+      <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64 mr-4' : 'w-0 mr-0'}`}>
+        {isSidebarOpen && (
+          <div className="border rounded-lg p-4 h-full flex flex-col">
+            <h2 className="text-lg font-semibold mb-4">Files</h2>
+            <ScrollArea className="flex-grow mb-4">
+              {tabs.map(tab => (
                 <Button
-                  variant="ghost"
-                  size="sm"
-                  className="ml-2 p-0"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeTab(tab.id)
-                  }}
+                  key={tab.id}
+                  variant={activeTab === tab.id ? "secondary" : "ghost"}
+                  className="w-full justify-start mb-2"
+                  onClick={() => setActiveTab(tab.id)}
                 >
-                  <X className="h-4 w-4" />
-                  <span className="sr-only">Close tab</span>
+                  <FileText className="h-4 w-4 mr-2" />
+                  {tab.title}
                 </Button>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <Button onClick={addTab} variant="outline" size="sm">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            New Tab
+              ))}
+            </ScrollArea>
+            <Button onClick={addTab} className="w-full justify-start">
+              <PlusCircle className="h-4 w-4 mr-2" />
+              New File
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Main content */}
+      <div className="flex-grow">
+        <div className="mb-4 flex justify-between items-center">
+          <Button onClick={toggleSidebar} variant="outline" size="sm">
+            {isSidebarOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+            <span className="sr-only">Toggle sidebar</span>
           </Button>
         </div>
-        {tabs.map(tab => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-0">
-            <Tiptap
-              content={tab.content}
-              selection={tab.selection}
-              handleUpdate={(content, selection) => updateTabState(
-                tab.id,
-                content,
-                selection
-              )}
-            />
-          </TabsContent>
-        ))}
-      </Tabs>
+
+        {activeTab ? (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="mb-4">
+              {tabs.map(tab => (
+                <TabsTrigger key={tab.id} value={tab.id} className="flex items-center">
+                  {tab.title}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-2 p-0"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeTab(tab.id)
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close tab</span>
+                  </Button>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {tabs.map(tab => (
+              <TabsContent key={tab.id} value={tab.id} className="mt-0">
+                <Tiptap
+                  content={tab.content}
+                  selection={tab.selection}
+                  handleUpdate={(content, selection) => updateTabContent(
+                    tab.id,
+                    content,
+                    selection
+                  )}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          <div className="text-center text-gray-500 mt-8">
+            No file selected. Create a new file or select one from the sidebar.
+          </div>
+        )}
+      </div>
     </div>
   )
 }
