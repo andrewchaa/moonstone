@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { PlusCircle, FileText, Folder } from 'lucide-react'
 import { EditorTab } from '@/editor/MultiTabTextEditor'
-import { useState } from "react"
-import { set } from "date-fns"
 
 type Props = {
   isSidebarOpen: boolean
@@ -12,6 +10,7 @@ type Props = {
   activeTab: string | null
   setActiveTab: (tabId: string) => void
   addTab: (title?: string) => void
+  setDirectoryPath: (directoryPath: string) => void
 }
 
 const EditorSidebar = ({
@@ -21,6 +20,7 @@ const EditorSidebar = ({
   activeTab,
   setActiveTab,
   addTab,
+  setDirectoryPath,
 }: Props) => {
 
   return (
@@ -47,8 +47,6 @@ const EditorSidebar = ({
         <Button
           onClick={async () => {
             const [directoryPath, files] = await window.electronAPI.openDirectorySelector()
-            console.log('files', directoryPath, files)
-            // setTabs([])
             const tabs = files
               .filter((file: string) => !file.startsWith('.'))
               .map((file: string) => ({
@@ -56,6 +54,7 @@ const EditorSidebar = ({
                 title: file,
                 content: ''
               }))
+            setDirectoryPath(directoryPath)
             setTabs(tabs)
             setActiveTab(tabs[0].id)
           }}

@@ -47,6 +47,18 @@ const createWindow = () => {
       return []
     }
   })
+
+  ipcMain.handle('read-file-content', async (event, filePath) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf-8', (err, data) => {
+        if (err) {
+          reject('Error reading file:', err)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  })
 };
 
 // This method will be called when Electron has finished

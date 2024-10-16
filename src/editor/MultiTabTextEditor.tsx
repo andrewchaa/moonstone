@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { X, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
@@ -15,8 +15,9 @@ export interface EditorTab {
 
 export default function MultiTabTextEditor() {
   const [tabs, setTabs] = useState<EditorTab[]>([])
-  const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [directoryPath, setDirectoryPath] = useState<string | null>(null)
 
   const addTab = () => {
     const newTab: EditorTab = {
@@ -25,16 +26,16 @@ export default function MultiTabTextEditor() {
       content: ''
     }
     setTabs([...tabs, newTab])
-    setActiveTab(newTab.id)
+    setActiveTabId(newTab.id)
   }
 
   const removeTab = (tabId: string) => {
     const newTabs = tabs.filter(tab => tab.id !== tabId)
     setTabs(newTabs)
-    if (activeTab === tabId && newTabs.length > 0) {
-      setActiveTab(newTabs[newTabs.length - 1].id)
+    if (activeTabId === tabId && newTabs.length > 0) {
+      setActiveTabId(newTabs[newTabs.length - 1].id)
     } else if (newTabs.length === 0) {
-      setActiveTab(null)
+      setActiveTabId(null)
     }
   }
 
@@ -52,16 +53,30 @@ export default function MultiTabTextEditor() {
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+  useEffect(() => {
+    const loadFileContent = async () => {
+      if (directoryPath && activeTabId) {
+        const activeTab = tabs.find(tab => tab.id === activeTabId)
+        if (!activeTab) return
+
+        const content = await window.electronAPI.readFileContent(`${directoryPath}/${activeTab.title}`)
+        updateTabContent(activeTab.id, content)
+      }
+    }
+    loadFileContent()
+  }, [directoryPath, tabs])
+
   return (
     <div className="w-full max-w-6xl mx-auto p-4 flex">
 
       <EditorSidebar
         isSidebarOpen={isSidebarOpen}
         tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        activeTab={activeTabId}
+        setActiveTab={setActiveTabId}
         addTab={addTab}
         setTabs={setTabs}
+        setDirectoryPath={setDirectoryPath}
       />
 
       {/* Main content */}
@@ -73,8 +88,8 @@ export default function MultiTabTextEditor() {
           </Button>
         </div>
 
-        {activeTab ? (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {activeTabId ? (
+          <Tabs value={activeTabId} onValueChange={setActiveTabId} className="w-full">
             <TabsList className="mb-4">
               {tabs.map(tab => (
                 <TabsTrigger key={tab.id} value={tab.id} className="flex items-center">
