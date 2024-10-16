@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { marked } from 'marked'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { X, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
@@ -60,7 +61,7 @@ export default function MultiTabTextEditor() {
         if (!activeTab) return
 
         const content = await window.electronAPI.readFileContent(`${directoryPath}/${activeTab.title}`)
-        updateTabContent(activeTab.id, content)
+        updateTabContent(activeTab.id, await marked(content) )
       }
     }
     loadFileContent()
