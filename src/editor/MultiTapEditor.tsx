@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { PlusCircle, X, FileText, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Selection } from '@tiptap/pm/state'
-import Tiptap from '@/Tiptap'
+import Tiptap from '@/editor/Tiptap'
 
 interface Tab {
   id: string

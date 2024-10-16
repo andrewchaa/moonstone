@@ -1,4 +1,4 @@
-import './styles.scss'
+import '../styles.scss'
 
 import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
