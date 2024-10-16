@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { PlusCircle, FileText, } from 'lucide-react'
+import { PlusCircle, FileText, Folder } from 'lucide-react'
 import { EditorTab } from '@/editor/MultiTabTextEditor'
-
+import { useState } from "react"
 
 type Props = {
   isSidebarOpen: boolean
@@ -19,6 +19,8 @@ const EditorSidebar = ({
   setActiveTab,
   addTab,
 }: Props) => {
+  const [filenames, setFilenames] = useState<string[]>([])
+
   return (
     <div className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64 mr-4' : 'w-0 mr-0'}`}>
     {isSidebarOpen && (
@@ -38,8 +40,17 @@ const EditorSidebar = ({
           ))}
         </ScrollArea>
         <Button onClick={addTab} className="w-full justify-start">
-          <PlusCircle className="h-4 w-4 mr-2" />
-          New File
+          <PlusCircle className="h-4 w-4 mr-2" /> New File
+        </Button>
+        <Button
+          onClick={async () => {
+            const [directoryPath, files] = await window.electronAPI.openDirectorySelector()
+            console.log('files', directoryPath, files)
+            setFilenames(files)
+          }}
+          className="w-full justify-start"
+        >
+          <Folder className="h-4 w-4 mr-2" /> Open Vault
         </Button>
       </div>
     )}

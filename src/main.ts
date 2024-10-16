@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import path from 'path';
+import fs from 'fs';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -25,6 +26,27 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  ipcMain.handle('open-directory-selector', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+    })
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      const directoryPath = result.filePaths[0]
+      return new Promise((resolve, reject) => {
+        fs.readdir(directoryPath, (err, files) => {
+          if (err) {
+            reject('Error reading directory:', err)
+          } else {
+            resolve([directoryPath, files])
+          }
+        })
+      })
+    } else {
+      return []
+    }
+  })
 };
 
 // This method will be called when Electron has finished
