@@ -11,37 +11,42 @@ import { EditorTab, SidebarFile } from '@/editor/types'
 export default function MultiTabTextEditor() {
   const [tabs, setTabs] = useState<EditorTab[]>([])
   const [sidebarFiles, setSidebarFiles] = useState<SidebarFile[]>([])
-  const [activeTabId, setActiveTabId] = useState<string | null>(null)
+  const [activeTabTitle, setActiveTabTitle] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
-  const addTab = () => {
+  const addTab = (title: string, content: string) => {
     const newTab: EditorTab = {
-      id: Date.now().toString(),
-      title: `Untitled ${tabs.length + 1}`,
-      content: ''
+      title,
+      content,
     }
     setTabs([...tabs, newTab])
-    setActiveTabId(newTab.id)
+    setActiveTabTitle(newTab.title)
   }
 
   const removeTab = (tabId: string) => {
     const newTabs = tabs.filter(tab => tab.id !== tabId)
     setTabs(newTabs)
-    if (activeTabId === tabId && newTabs.length > 0) {
-      setActiveTabId(newTabs[newTabs.length - 1].id)
+    if (activeTabTitle === tabId && newTabs.length > 0) {
+      setActiveTabTitle(newTabs[newTabs.length - 1].id)
     } else if (newTabs.length === 0) {
-      setActiveTabId(null)
+      setActiveTabTitle(null)
     }
   }
 
   const updateTabContent = (
-    tabId: string,
+    title: string,
     content: string,
     selection?: Selection | null
   ) => {
-    setTabs(tabs.map(tab =>
-      tab.id === tabId ? { ...tab, content, selection } : tab
-    ))
+    const tabExist = tabs.find(tab => tab.title === title)
+    if (tabExist) {
+      setTabs(tabs.map(tab =>
+        tab.title === title ? { ...tab, content, selection } : tab
+      ))
+      return
+    }
+
+    setTabs([...tabs, { title, content, selection }])
   }
 
   const toggleSidebar = () => {
@@ -50,24 +55,28 @@ export default function MultiTabTextEditor() {
 
   useEffect(() => {
     const loadFileContent = async () => {
-      if (activeTabId) {
-        const activeTab = tabs.find(tab => tab.id === activeTabId)
-        if (!activeTab || activeTab.content.length > 0) return
-
-        const content = await window.electronAPI.readFileContent(`${directoryPath}/${activeTab.title}`)
-        updateTabContent(activeTab.id, await marked(content) )
+      if (!activeTabTitle) {
+        return
       }
+
+      const activeFile = sidebarFiles.find(file => file.title === activeTabTitle)
+      const markdownContent = await window.electronAPI.readFileContent(activeFile.filePath)
+      if (!activeFile) {
+        return
+      }
+
+      updateTabContent(activeTabTitle, await marked(markdownContent))
     }
     loadFileContent()
-  }, [tabs])
+  }, [activeTabTitle])
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 flex">
 
       <EditorSidebar
         isSidebarOpen={isSidebarOpen}
-        activeTab={activeTabId}
-        setActiveTab={setActiveTabId}
+        activeTabTitle={activeTabTitle}
+        setActiveTabTitle={setActiveTabTitle}
         addTab={addTab}
         sidebarFiles={sidebarFiles}
         setSidebarFiles={setSidebarFiles}
@@ -82,8 +91,8 @@ export default function MultiTabTextEditor() {
           </Button>
         </div>
 
-        {activeTabId ? (
-          <Tabs value={activeTabId} onValueChange={setActiveTabId} className="w-full">
+        {activeTabTitle ? (
+          <Tabs value={activeTabTitle} onValueChange={setActiveTabTitle} className="w-full">
             <TabsList className="mb-4">
               {tabs.map(tab => (
                 <TabsTrigger key={tab.id} value={tab.id} className="flex items-center">
@@ -104,7 +113,7 @@ export default function MultiTabTextEditor() {
               ))}
             </TabsList>
             {tabs.map(tab => (
-              <TabsContent key={tab.id} value={tab.id} className="mt-0">
+              <TabsContent key={tab.title} value={tab.title} className="mt-0">
                 <Tiptap
                   content={tab.content}
                   selection={tab.selection}
