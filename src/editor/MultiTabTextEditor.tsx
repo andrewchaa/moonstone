@@ -6,19 +6,13 @@ import { X, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Selection } from '@tiptap/pm/state'
 import Tiptap from '@/editor/Tiptap'
 import EditorSidebar from '@/editor/EditorSidebar'
-
-export interface EditorTab {
-  id: string
-  title: string
-  content: string
-  selection?: Selection | null
-}
+import { EditorTab, SidebarFile } from '@/editor/types'
 
 export default function MultiTabTextEditor() {
   const [tabs, setTabs] = useState<EditorTab[]>([])
+  const [sidebarFiles, setSidebarFiles] = useState<SidebarFile[]>([])
   const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [directoryPath, setDirectoryPath] = useState<string | null>(null)
 
   const addTab = () => {
     const newTab: EditorTab = {
@@ -56,28 +50,27 @@ export default function MultiTabTextEditor() {
 
   useEffect(() => {
     const loadFileContent = async () => {
-      if (directoryPath && activeTabId) {
+      if (activeTabId) {
         const activeTab = tabs.find(tab => tab.id === activeTabId)
-        if (!activeTab) return
+        if (!activeTab || activeTab.content.length > 0) return
 
         const content = await window.electronAPI.readFileContent(`${directoryPath}/${activeTab.title}`)
         updateTabContent(activeTab.id, await marked(content) )
       }
     }
     loadFileContent()
-  }, [directoryPath, tabs])
+  }, [tabs])
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 flex">
 
       <EditorSidebar
         isSidebarOpen={isSidebarOpen}
-        tabs={tabs}
         activeTab={activeTabId}
         setActiveTab={setActiveTabId}
         addTab={addTab}
-        setTabs={setTabs}
-        setDirectoryPath={setDirectoryPath}
+        sidebarFiles={sidebarFiles}
+        setSidebarFiles={setSidebarFiles}
       />
 
       {/* Main content */}
