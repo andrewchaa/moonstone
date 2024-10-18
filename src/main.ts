@@ -2,12 +2,14 @@ import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { Document } from './editor/types';
+import TurndownService from 'turndown';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+const turndownService = new TurndownService()
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -46,6 +48,7 @@ const createWindow = () => {
                 id: file,
                 name: file,
                 content: fs.readFileSync(`${directoryPath}/${file}`, 'utf-8'),
+                filePath: `${directoryPath}/${file}`
               }));
             resolve(documents)
           }
@@ -63,6 +66,19 @@ const createWindow = () => {
           reject('Error reading file:', err)
         } else {
           resolve(data)
+        }
+      })
+    })
+  })
+
+  ipcMain.handle('write-file-content', async (event, filePath, content) => {
+    const markdownContent = turndownService.turndown(content)
+    return new Promise<void>((resolve, reject) => {
+      fs.writeFile(filePath, markdownContent, 'utf-8', (err) => {
+        if (err) {
+          reject('Error writing file:', err)
+        } else {
+          resolve()
         }
       })
     })

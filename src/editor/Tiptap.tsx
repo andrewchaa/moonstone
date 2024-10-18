@@ -68,8 +68,9 @@ const Tiptap = ({ document, handleContentChange }: Props) => {
         props.editor.commands.setTextSelection(document.selection)
       }
     },
-    onUpdate: (props) => {
+    onUpdate: async (props) => {
       console.log('update', props)
+      await window.electronAPI.writeFileContent({...document, content: props.editor.getHTML()})
     }
   })
 

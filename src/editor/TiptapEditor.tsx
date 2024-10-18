@@ -16,17 +16,17 @@ export default function TextEditorApp() {
   const [activeFile, setActiveFile] = useState<string>(documents[0].id)
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
 
-  const handleContentChange = (
+  const handleContentChange = async (
     id: string,
     newContent: string,
     newSelection?: Selection
   ) => {
-    setDocuments(documents.map(file =>
-      file.id === id ? {
-        ...file,
+    setDocuments(documents.map(doc =>
+      doc.id === id ? {
+        ...doc,
         content: newContent,
         selection: newSelection
-      } : file
+      } : doc
     ))
   }
 
@@ -50,7 +50,6 @@ export default function TextEditorApp() {
 
     setDocuments([...documents, ...newDocuments])
   }
-
 
   return (
     <div className="flex h-screen bg-background">
