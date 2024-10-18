@@ -43,21 +43,12 @@ export default function TextEditorApp() {
   }
 
   const openVault = async () => {
-    const [directoryPath, files] = await window.electronAPI.openDirectorySelector()
-    const docs = files
-      .filter((file: string) => !file.startsWith('.'))
-      .filter((file: string) => !documents.some((doc: Document) => doc.name === file))
-      .map((file: string) => ({
-        id: file,
-        name: file,
-        content: '',
-      }))
-    docs.forEach(async (doc: Document) => {
-      const content = await window.electronAPI.readFileContent(`${directoryPath}/${doc.name}`)
-      doc.content = content
-    })
+    const vaultDocuments = await window.electronAPI.openDirectorySelector()
+    const newDocuments = vaultDocuments.filter((doc: Document) =>
+      !documents.some((existingDoc: Document) => existingDoc.name === doc.name)
+    )
 
-    setDocuments([...documents, ...docs])
+    setDocuments([...documents, ...newDocuments])
   }
 
 
@@ -124,11 +115,6 @@ export default function TextEditorApp() {
           {documents.map((document) => (
             <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
               <Tiptap document={document} handleContentChange={handleContentChange} />
-              {/* <Textarea
-                className="h-full w-full resize-none"
-                value={file.content}
-                onChange={(e) => handleContentChange(file.id, e.target.value)}
-              /> */}
             </TabsContent>
           ))}
         </Tabs>

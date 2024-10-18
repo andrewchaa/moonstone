@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import { Document } from './editor/types';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -39,7 +40,14 @@ const createWindow = () => {
           if (err) {
             reject('Error reading directory:', err)
           } else {
-            resolve([directoryPath, files])
+            const documents: Document[] = files
+              .filter((file) => !file.startsWith('.'))
+              .map((file: string) => ({
+                id: file,
+                name: file,
+                content: fs.readFileSync(`${directoryPath}/${file}`, 'utf-8'),
+              }));
+            resolve(documents)
           }
         })
       })
