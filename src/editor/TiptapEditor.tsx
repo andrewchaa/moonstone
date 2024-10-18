@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Vault } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, Vault, DownloadCloudIcon } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -42,6 +42,25 @@ export default function TextEditorApp() {
     setIsSidebarVisible(!isSidebarVisible)
   }
 
+  const openVault = async () => {
+    const [directoryPath, files] = await window.electronAPI.openDirectorySelector()
+    const docs = files
+      .filter((file: string) => !file.startsWith('.'))
+      .filter((file: string) => !documents.some((doc: Document) => doc.name === file))
+      .map((file: string) => ({
+        id: file,
+        name: file,
+        content: '',
+      }))
+    docs.forEach(async (doc: Document) => {
+      const content = await window.electronAPI.readFileContent(`${directoryPath}/${doc.name}`)
+      doc.content = content
+    })
+
+    setDocuments([...documents, ...docs])
+  }
+
+
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
@@ -72,7 +91,7 @@ export default function TextEditorApp() {
               </div>
             </ScrollArea>
             <div className="p-4 border-t">
-              <Button className="w-full">
+              <Button className="w-full" onClick={openVault}>
                 <Vault className="mr-2 h-4 w-4" />
                 Open vault
               </Button>
