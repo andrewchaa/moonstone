@@ -10,6 +10,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
 import { Selection } from '@tiptap/pm/state'
+import { File } from './types'
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -30,24 +31,29 @@ const extensions = [
 ]
 
 type Props = {
-  content: string
+  file: File
   selection?: Selection | null
-  handleUpdate: (
-    content: string,
+  handleContentChange: (
+    id: string,
+    newContent: string,
     selection: Selection | null
   ) => void
 }
 
-const Tiptap = ({ content, selection, handleUpdate }: Props) => {
+const Tiptap = ({ file, handleContentChange }: Props) => {
   const editor = useEditor({
     extensions,
-    content,
+    content: file.content,
     onDestroy: (props) => {
       console.log('destroyed', props)
     },
     onBlur(props) {
       console.log('blur', props)
-      handleUpdate(props.editor.getHTML(), props.editor.state.selection)
+      handleContentChange(
+        file.id,
+        props.editor.getHTML(),
+        props.editor.state.selection
+      )
     },
     onFocus(props) {
       console.log('focus', props)
@@ -57,23 +63,15 @@ const Tiptap = ({ content, selection, handleUpdate }: Props) => {
     },
     onCreate(props) {
       console.log('create', props)
+      props.editor.commands.focus()
+      if (file.selection) {
+        props.editor.commands.setTextSelection(file.selection)
+      }
     },
     onUpdate: (props) => {
       console.log('update', props)
     }
   })
-
-  useEffect(() => {
-    if (editor) {
-      editor.commands.focus()
-      editor.commands.setContent(content)
-
-      if (selection) {
-        editor.commands.setTextSelection(selection)
-      }
-    }
-
-  }, [content, editor, selection])
 
   return (
     <div className="tiptap">
