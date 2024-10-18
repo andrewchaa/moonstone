@@ -10,7 +10,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
 import { Selection } from '@tiptap/pm/state'
-import { File } from './types'
+import { Document } from './types'
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -31,26 +31,26 @@ const extensions = [
 ]
 
 type Props = {
-  file: File
+  document: Document
   selection?: Selection | null
   handleContentChange: (
     id: string,
     newContent: string,
-    selection: Selection | null
+    selection?: Selection
   ) => void
 }
 
-const Tiptap = ({ file, handleContentChange }: Props) => {
+const Tiptap = ({ document, handleContentChange }: Props) => {
   const editor = useEditor({
     extensions,
-    content: file.content,
+    content: document.content,
     onDestroy: (props) => {
       console.log('destroyed', props)
     },
     onBlur(props) {
       console.log('blur', props)
       handleContentChange(
-        file.id,
+        document.id,
         props.editor.getHTML(),
         props.editor.state.selection
       )
@@ -64,8 +64,8 @@ const Tiptap = ({ file, handleContentChange }: Props) => {
     onCreate(props) {
       console.log('create', props)
       props.editor.commands.focus()
-      if (file.selection) {
-        props.editor.commands.setTextSelection(file.selection)
+      if (document.selection) {
+        props.editor.commands.setTextSelection(document.selection)
       }
     },
     onUpdate: (props) => {
