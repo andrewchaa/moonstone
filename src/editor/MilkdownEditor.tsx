@@ -1,4 +1,4 @@
-// import '../index.css';
+import '../index.css';
 import { defaultValueCtx, Editor, rootCtx } from '@milkdown/kit/core';
 import type { FC } from 'react';
 
