@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { Document } from './editor/types';
+import { EditorDocument } from './editor/types';
 import TurndownService from 'turndown';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -42,7 +42,7 @@ const createWindow = () => {
           if (err) {
             reject('Error reading directory:', err)
           } else {
-            const documents: Document[] = files
+            const documents: EditorDocument[] = files
               .filter((file) => !file.startsWith('.'))
               .map((file: string) => ({
                 id: file,

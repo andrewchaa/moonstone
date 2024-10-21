@@ -1,6 +1,6 @@
 import { Selection } from '@tiptap/pm/state'
 
-export type Document = {
+export type EditorDocument = {
   id: string
   name: string
   content: string

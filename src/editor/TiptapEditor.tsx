@@ -5,10 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Selection } from '@tiptap/pm/state'
 import Tiptap from '@/editor/Tiptap'
-import { Document } from '@/editor/types'
+import { EditorDocument } from '@/editor/types'
 
 export default function TextEditorApp() {
-  const [documents, setDocuments] = useState<Document[]>([
+  const [documents, setDocuments] = useState<EditorDocument[]>([
     { id: '1', name: 'document1.txt', content: 'This is the content of document 1.' },
     { id: '2', name: 'document2.txt', content: 'This is the content of document 2.' },
     { id: '3', name: 'document3.txt', content: 'This is the content of document 3.' },
@@ -44,8 +44,8 @@ export default function TextEditorApp() {
 
   const openVault = async () => {
     const vaultDocuments = await window.electronAPI.openDirectorySelector()
-    const newDocuments = vaultDocuments.filter((doc: Document) =>
-      !documents.some((existingDoc: Document) => existingDoc.name === doc.name)
+    const newDocuments = vaultDocuments.filter((doc: EditorDocument) =>
+      !documents.some((existingDoc: EditorDocument) => existingDoc.name === doc.name)
     )
 
     setDocuments([...documents, ...newDocuments])
