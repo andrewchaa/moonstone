@@ -25,8 +25,8 @@ export const MilkdownEditor: FC = () => {
       })
       .config(nord)
       .use(listener)
-      .use(gfm)
       .use(commonmark)
+      .use(gfm)
       .use(history)
   }, [])
 
