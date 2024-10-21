@@ -1,12 +1,23 @@
 import React from 'react';
-import MultiTabEditor from './editor/MultiTabTextEditor';
 import TiptapEditor from './editor/TiptapEditor';
+import { MilkdownProvider } from '@milkdown/react'
+import { MilkdownEditor } from './editor/MilkdownEditor';
 
+
+// const App: React.FC = () => {
+//   return (
+//     <div>
+//       {/* <MultiTabEditor /> */}
+//       <TiptapEditor />
+//     </div>
+//   );
+// };
 const App: React.FC = () => {
   return (
     <div>
-      {/* <MultiTabEditor /> */}
-      <TiptapEditor />
+      <MilkdownProvider>
+        <MilkdownEditor />
+      </MilkdownProvider>
     </div>
   );
 };
