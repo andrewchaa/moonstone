@@ -1,30 +1,33 @@
 import '../index.css';
 import { defaultValueCtx, Editor, rootCtx } from '@milkdown/kit/core';
-import type { FC } from 'react';
-
+import { useState, type FC } from 'react';
 import { Milkdown, useEditor } from '@milkdown/react'
 import { commonmark } from '@milkdown/kit/preset/commonmark';
+import { gfm } from '@milkdown/preset-gfm';
+import { history } from '@milkdown/plugin-history';
+import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { nord } from '@milkdown/theme-nord';
 
 import '@milkdown/theme-nord/style.css';
 
-const markdown =
-`# Milkdown React Commonmark
-
-> You're scared of a world where you're needed.
-
-This is a demo for using Milkdown with **React**.`
-
 export const MilkdownEditor: FC = () => {
+  const [markdownContent, setMarkdownContent] = useState<string>('Hello')
+
+  console.log('content', markdownContent)
   useEditor((root) => {
     return Editor
       .make()
       .config(ctx => {
         ctx.set(rootCtx, root)
-        ctx.set(defaultValueCtx, markdown)
+        ctx.set(defaultValueCtx, markdownContent)
+        ctx.get(listenerCtx)
+          .markdownUpdated((_, markdown) => setMarkdownContent(markdown))
       })
       .config(nord)
+      .use(listener)
+      .use(gfm)
       .use(commonmark)
+      .use(history)
   }, [])
 
   return <Milkdown />
