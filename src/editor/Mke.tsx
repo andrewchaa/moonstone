@@ -23,9 +23,11 @@ export const Mke = ({ document, handleContentChange }: Props) => {
       .make()
       .config(ctx => {
         ctx.set(rootCtx, root)
-        ctx.set(defaultValueCtx, document?.content || '')
+        // ctx.set(defaultValueCtx, document?.content || '')
+        ctx.set(defaultValueCtx, markdownContent || '')
         ctx.get(listenerCtx)
-          .markdownUpdated((_, markdown) => handleContentChange(document.id, markdown))
+          // .markdownUpdated((_, markdown) => handleContentChange(document.id, markdown))
+          .markdownUpdated((_, markdown) => setMarkdownContent(markdown))
       })
       .config(nord)
       .use(listener)
