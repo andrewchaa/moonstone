@@ -3,6 +3,7 @@ import { Crepe } from '@milkdown/crepe';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
+import { editorViewCtx } from '@milkdown/core';
 
 interface CrepeEditorProps {
   content: string;
@@ -27,12 +28,12 @@ const CrepeEditor: React.FC<CrepeEditorProps> = ({ content, onChange }) => {
       ctx.get(listenerCtx)
         .markdownUpdated((_, markdown) => onChange?.(markdown))
     })
-      .use(listener)
+    .use(listener)
 
     crepe.create().then(() => {
       (crepeRef as MutableRefObject<Crepe>).current = crepe;
+      crepe.editor.ctx.get(editorViewCtx).focus();
     })
-
 
     return () => {
       crepe.destroy();

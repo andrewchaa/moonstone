@@ -3,7 +3,7 @@ import { X, ChevronLeft, ChevronRight, Vault, DownloadCloudIcon } from 'lucide-r
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Selection } from '@tiptap/pm/state'
+import { Selection } from
 import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
 
