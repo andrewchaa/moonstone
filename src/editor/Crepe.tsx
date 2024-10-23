@@ -1,7 +1,4 @@
 import React, { MutableRefObject, useLayoutEffect, useRef } from 'react';
-import { Editor, rootCtx } from '@milkdown/core';
-import { useEditor } from '@milkdown/react';
-import { commonmark } from '@milkdown/preset-commonmark';
 import { Crepe } from '@milkdown/crepe';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import "@milkdown/crepe/theme/common/style.css";
@@ -30,7 +27,7 @@ const CrepeEditor: React.FC<CrepeEditorProps> = ({ content, onChange }) => {
       ctx.get(listenerCtx)
         .markdownUpdated((_, markdown) => onChange?.(markdown))
     })
-    .use(listener)
+      .use(listener)
 
     crepe.create().then(() => {
       (crepeRef as MutableRefObject<Crepe>).current = crepe;
@@ -41,8 +38,6 @@ const CrepeEditor: React.FC<CrepeEditorProps> = ({ content, onChange }) => {
       crepe.destroy();
     }
   }, []);
-
-
 
   return <div className="crepe flex h-full flex-1 flex-col" ref={divRef} />
 };

@@ -1,20 +1,12 @@
 import React from 'react';
-import MkeEditor from '@/editor/MkeEditor';
-import { Mke } from '@/editor/Mke';
-import { MilkdownProvider } from '@milkdown/react';
-import CrepeEditor from '@/editor/Crepe';
+import MultiTabCrepeEditor from '@/editor/MultiTapCrepeEditor';
+import './index.css';
 
 
 const App: React.FC = () => {
   return (
-    // <div><MkeEditor /></div>
-    // <div>
-    //   <MilkdownProvider>
-    //     <Mke document={{ id: '1', content: 'Hello' }} handleContentChange={()=> {}} />
-    //   </MilkdownProvider>
-    // </div>
     <div>
-      <CrepeEditor content="Hello" onChange={() => {}} />
+      <MultiTabCrepeEditor />
     </div>
   );
 };
