@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Vault, DownloadCloudIcon } from 'lucide-react'
+import { Selection } from '@milkdown/prose'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Selection } from
 import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
 
@@ -19,13 +19,13 @@ export default function MultiTabCrepeEditor() {
   const handleContentChange = async (
     id: string,
     newContent: string,
-    newSelection?: Selection
+    cursorPos?: number,
   ) => {
     setDocuments(documents.map(doc =>
       doc.id === id ? {
         ...doc,
         content: newContent,
-        selection: newSelection
+        cursorPos,
       } : doc
     ))
   }
@@ -113,10 +113,11 @@ export default function MultiTabCrepeEditor() {
           </ScrollArea>
           {documents.map((document) => (
             <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
-              <CrepeEditor content={document.content} onChange={(markdown) => handleContentChange(document.id, markdown)} />
-              {/* <MilkdownProvider>
-              <Mke document={document} handleContentChange={handleContentChange} />
-              </MilkdownProvider> */}
+              <CrepeEditor
+                content={document.content}
+                cursorPos={document.cursorPos}
+                onChange={(markdown, selection) => handleContentChange(document.id, markdown, selection)}
+              />
             </TabsContent>
           ))}
         </Tabs>

@@ -1,11 +1,11 @@
-import { Selection } from '@tiptap/pm/state'
+import { Selection } from "@milkdown/prose/state"
 
 export type EditorDocument = {
   id: string
   name: string
   content: string
+  cursorPos?: number
   filePath?: string
-  selection?: Selection
 }
 
 export type EditorTab = {

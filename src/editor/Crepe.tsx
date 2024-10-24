@@ -4,13 +4,15 @@ import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/frame.css";
 import { editorViewCtx } from '@milkdown/core';
+import { Selection } from '@milkdown/prose/state';
 
-interface CrepeEditorProps {
-  content: string;
-  onChange?: (markdown: string) => void;
+type Props = {
+  content: string
+  cursorPos?: number
+  onChange: (markdown: string, cursorPos: number) => void
 }
 
-const CrepeEditor: React.FC<CrepeEditorProps> = ({ content, onChange }) => {
+const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -22,17 +24,28 @@ const CrepeEditor: React.FC<CrepeEditorProps> = ({ content, onChange }) => {
     const crepe = new Crepe({
       root: divRef.current,
       defaultValue: content,
+
     });
 
     crepe.editor.config((ctx) => {
       ctx.get(listenerCtx)
-        .markdownUpdated((_, markdown) => onChange?.(markdown))
+        .markdownUpdated((ctx, markdown) => onChange(
+          markdown,
+          ctx.get(editorViewCtx).state.selection.from,
+        ))
     })
     .use(listener)
 
     crepe.create().then(() => {
       (crepeRef as MutableRefObject<Crepe>).current = crepe;
       crepe.editor.ctx.get(editorViewCtx).focus();
+
+      if (cursorPos) {
+        const view = crepe.editor.ctx.get(editorViewCtx);
+        view.dispatch(
+          view.state.tr.setSelection(Selection.near(view.state.doc.resolve(cursorPos))
+        ));
+      }
     })
 
     return () => {
