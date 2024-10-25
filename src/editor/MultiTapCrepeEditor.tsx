@@ -101,6 +101,24 @@ export default function MultiTabCrepeEditor() {
                 </ul>
               </div>
             </ScrollArea>
+            <ScrollArea className="flex-1">
+              <div className="p-4">
+                <h2 className="mb-4 text-lg font-semibold">Vault Files</h2>
+                <ul>
+                  {vaultDocuments.map((file) => (
+                    <li key={file.id} className="mb-2">
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => setActiveFile(file.id)}
+                      >
+                        {file.name}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollArea>
             <div className="p-4 border-t">
               <Button className="w-full" onClick={openVault}>
                 <Vault className="mr-2 h-4 w-4" />
