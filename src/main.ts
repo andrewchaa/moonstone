@@ -1,15 +1,13 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { EditorDocument } from './editor/types';
-import TurndownService from 'turndown';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const turndownService = new TurndownService()
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -83,6 +81,21 @@ const createWindow = () => {
     })
   })
 };
+
+const menu = new Menu()
+menu.append(new MenuItem({
+  label: 'File',
+  submenu: [
+    {
+      label: 'Search documents',
+      role: 'help',
+      accelerator: 'CmdOrCtrl+p',
+      click: async () => {
+      }
+    }
+  ]
+}))
+Menu.setApplicationMenu(menu)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
