@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Vault, DownloadCloudIcon } from 'lucide-react'
-import { Selection } from '@milkdown/prose'
+import { debounce } from 'lodash'
+
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
@@ -8,13 +9,19 @@ import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
 
 export default function MultiTabCrepeEditor() {
-  const [documents, setDocuments] = useState<EditorDocument[]>([
-    { id: '1', name: 'document1.txt', content: 'This is the content of document 1.' },
-    { id: '2', name: 'document2.txt', content: 'This is the content of document 2.' },
-    { id: '3', name: 'document3.txt', content: 'This is the content of document 3.' },
-  ])
-  const [activeFile, setActiveFile] = useState<string>(documents[0].id)
+  const [documents, setDocuments] = useState<EditorDocument[]>([])
+
+  console.log('documents', documents)
+
+  const [activeFile, setActiveFile] = useState<string>('')
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
+
+  const saveContent = useCallback(debounce(async (id: string, content: string) => {
+    const document = documents.find(doc => doc.id === id)
+    if (document?.filePath) {
+      await window.electronAPI.writeFileContent(document)
+    }
+  }, 1000), [documents])
 
   const handleContentChange = async (
     id: string,
@@ -28,6 +35,8 @@ export default function MultiTabCrepeEditor() {
         cursorPos,
       } : doc
     ))
+
+    saveContent(id, newContent)
   }
 
   const closeFile = (id: string) => {

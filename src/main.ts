@@ -72,9 +72,8 @@ const createWindow = () => {
   })
 
   ipcMain.handle('write-file-content', async (event, filePath, content) => {
-    const markdownContent = turndownService.turndown(content)
     return new Promise<void>((resolve, reject) => {
-      fs.writeFile(filePath, markdownContent, 'utf-8', (err) => {
+      fs.writeFile(filePath, content, 'utf-8', (err) => {
         if (err) {
           reject('Error writing file:', err)
         } else {
