@@ -25,6 +25,30 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: 'File',
+    submenu: [
+      {
+        label: 'Search documents',
+        role: 'help',
+        accelerator: 'CmdOrCtrl+p',
+        click: async () => {
+          mainWindow.webContents.send('search-documents')
+        }
+      },
+      {
+        label: 'Reload',
+        role: 'help',
+        accelerator: 'CmdOrCtrl+r',
+        click: async () => {
+          mainWindow.reload()
+        }
+      },
+    ]
+  }))
+  Menu.setApplicationMenu(menu)
+
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 
@@ -81,21 +105,6 @@ const createWindow = () => {
     })
   })
 };
-
-const menu = new Menu()
-menu.append(new MenuItem({
-  label: 'File',
-  submenu: [
-    {
-      label: 'Search documents',
-      role: 'help',
-      accelerator: 'CmdOrCtrl+p',
-      click: async () => {
-      }
-    }
-  ]
-}))
-Menu.setApplicationMenu(menu)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

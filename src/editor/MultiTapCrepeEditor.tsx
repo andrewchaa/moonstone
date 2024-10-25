@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Vault, DownloadCloudIcon } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { X, ChevronLeft, ChevronRight, Vault } from 'lucide-react'
 import { debounce } from 'lodash'
 
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -9,26 +9,24 @@ import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
 
 export default function MultiTabCrepeEditor() {
-  const [documents, setDocuments] = useState<EditorDocument[]>([])
-
-  console.log('documents', documents)
-
+  const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
+  const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
 
   const saveContent = useCallback(debounce(async (id: string, content: string) => {
-    const document = documents.find(doc => doc.id === id)
+    const document = openDocuments.find(doc => doc.id === id)
     if (document?.filePath) {
       await window.electronAPI.writeFileContent(document)
     }
-  }, 1000), [documents])
+  }, 1000), [openDocuments])
 
   const handleContentChange = async (
     id: string,
     newContent: string,
     cursorPos?: number,
   ) => {
-    setDocuments(documents.map(doc =>
+    setOpenDocuments(openDocuments.map(doc =>
       doc.id === id ? {
         ...doc,
         content: newContent,
@@ -40,8 +38,8 @@ export default function MultiTabCrepeEditor() {
   }
 
   const closeFile = (id: string) => {
-    const newFiles = documents.filter(file => file.id !== id)
-    setDocuments(newFiles)
+    const newFiles = openDocuments.filter(file => file.id !== id)
+    setOpenDocuments(newFiles)
     if (activeFile === id && newFiles.length > 0) {
       setActiveFile(newFiles[0].id)
     }
@@ -52,13 +50,27 @@ export default function MultiTabCrepeEditor() {
   }
 
   const openVault = async () => {
-    const vaultDocuments = await window.electronAPI.openDirectorySelector()
-    const newDocuments = vaultDocuments.filter((doc: EditorDocument) =>
-      !documents.some((existingDoc: EditorDocument) => existingDoc.name === doc.name)
+    const directoryDocuments = await window.electronAPI.openDirectorySelector()
+    const newDocuments = directoryDocuments.filter(
+      (doc: EditorDocument) =>!vaultDocuments.some(
+        (existingDoc: EditorDocument) => existingDoc.name === doc.name
+      )
     )
 
-    setDocuments([...documents, ...newDocuments])
+    setVaultDocuments([...vaultDocuments, ...newDocuments])
   }
+
+  useEffect(() => {
+    window.electronAPI.onSearchDocument(async () => {
+      console.log('Searching for documents...')
+      // const vaultDocuments = await window.electronAPI.openDirectorySelector()
+      // const newDocuments = vaultDocuments.filter((doc: EditorDocument) =>
+      //   !openDocuments.some((existingDoc: EditorDocument) => existingDoc.name === doc.name)
+      // )
+
+      // setOpenDocuments([...openDocuments, ...newDocuments])
+    })
+  }, [openDocuments])
 
   return (
     <div className="flex h-screen bg-background">
@@ -75,7 +87,7 @@ export default function MultiTabCrepeEditor() {
               <div className="p-4">
                 <h2 className="mb-4 text-lg font-semibold">Open Files</h2>
                 <ul>
-                  {documents.map((file) => (
+                  {openDocuments.map((file) => (
                     <li key={file.id} className="mb-2">
                       <Button
                         variant="ghost"
@@ -104,7 +116,7 @@ export default function MultiTabCrepeEditor() {
         <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
           <ScrollArea className="w-full border-b" orientation="horizontal">
             <TabsList>
-              {documents.map((file) => (
+              {openDocuments.map((file) => (
                 <TabsTrigger key={file.id} value={file.id} className="flex items-center">
                   {file.name}
                   <div
@@ -120,7 +132,7 @@ export default function MultiTabCrepeEditor() {
               ))}
             </TabsList>
           </ScrollArea>
-          {documents.map((document) => (
+          {openDocuments.map((document) => (
             <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
               <CrepeEditor
                 content={document.content}

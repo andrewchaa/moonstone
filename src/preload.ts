@@ -6,5 +6,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 contextBridge.exposeInMainWorld('electronAPI', {
   openDirectorySelector: () => ipcRenderer.invoke('open-directory-selector'),
   readFileContent: (filePath: string) => ipcRenderer.invoke('read-file-content', filePath),
-  writeFileContent: (document: EditorDocument) => ipcRenderer.invoke('write-file-content', document.filePath, document.content),
+  writeFileContent: (document: EditorDocument) =>
+    ipcRenderer.invoke('write-file-content', document.filePath, document.content),
+
+  onSearchDocument: (callback) => ipcRenderer.on('search-documents', (_event) => callback()),
 });
