@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, MenuItem } from 'electron';
+import { app, BrowserWindow, Menu, MenuItem } from 'electron';
 
 export const configureMenus = (mainWindow: BrowserWindow) => {
   const menu = new Menu()
@@ -27,6 +27,14 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
         accelerator: 'CmdOrCtrl+r',
         click: async () => {
           mainWindow.reload()
+        }
+      },
+      {
+        label: 'Quit',
+        role: 'quit',
+        accelerator: 'CmdOrCtrl+q',
+        click: () => {
+          app.quit();
         }
       },
     ]
