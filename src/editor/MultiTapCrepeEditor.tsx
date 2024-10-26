@@ -7,12 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
+import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 
 export default function MultiTabCrepeEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
+  const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(true)
 
   const saveContent = useCallback(debounce(async (id: string, content: string) => {
     const document = openDocuments.find(doc => doc.id === id)
@@ -52,7 +54,7 @@ export default function MultiTabCrepeEditor() {
   const openVault = async () => {
     const directoryDocuments = await window.electronAPI.openDirectorySelector()
     const newDocuments = directoryDocuments.filter(
-      (doc: EditorDocument) =>!vaultDocuments.some(
+      (doc: EditorDocument) => !vaultDocuments.some(
         (existingDoc: EditorDocument) => existingDoc.name === doc.name
       )
     )
@@ -110,7 +112,12 @@ export default function MultiTabCrepeEditor() {
                       <Button
                         variant="ghost"
                         className="w-full justify-start"
-                        onClick={() => setActiveFile(file.id)}
+                        onClick={() => {
+                          if (!openDocuments.some(doc => doc.id === file.id)) {
+                            setOpenDocuments([...openDocuments, file])
+                            setActiveFile(file.id)
+                          }
+                        }}
                       >
                         {file.name}
                       </Button>
@@ -131,6 +138,9 @@ export default function MultiTabCrepeEditor() {
 
       {/* Main Editor Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
+
+        <OpenDocumentDialog open={openDocumentDialogOpen} setOpen={setOpenDocumentDialogOpen} />
+
         <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
           <ScrollArea className="w-full border-b" orientation="horizontal">
             <TabsList>
