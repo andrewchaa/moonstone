@@ -66,12 +66,6 @@ export default function MultiTabCrepeEditor() {
     window.electronAPI.onSearchDocument(async () => {
       console.log('Searching for documents...')
       setOpenDocumentDialogOpen(true)
-      // const vaultDocuments = await window.electronAPI.openDirectorySelector()
-      // const newDocuments = vaultDocuments.filter((doc: EditorDocument) =>
-      //   !openDocuments.some((existingDoc: EditorDocument) => existingDoc.name === doc.name)
-      // )
-
-      // setOpenDocuments([...openDocuments, ...newDocuments])
     })
   }, [openDocuments])
 
@@ -140,7 +134,18 @@ export default function MultiTabCrepeEditor() {
       {/* Main Editor Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        <OpenDocumentDialog open={openDocumentDialogOpen} setOpen={setOpenDocumentDialogOpen} />
+        <OpenDocumentDialog
+          open={openDocumentDialogOpen}
+          setOpen={setOpenDocumentDialogOpen}
+          vaultDocuments={vaultDocuments}
+          onSelect={(doc) => {
+            if (!openDocuments.some(file => file.id === doc.id)) {
+              setOpenDocuments([...openDocuments, doc])
+            }
+            setActiveFile(doc.id)
+            setOpenDocumentDialogOpen(false)
+          }}
+        />
 
         <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
           <ScrollArea className="w-full border-b" orientation="horizontal">

@@ -1,65 +1,34 @@
 import {
-  CalendarIcon,
-  EnvelopeClosedIcon,
-  FaceIcon,
-  GearIcon,
-  PersonIcon,
-  RocketIcon,
-} from "@radix-ui/react-icons"
-
-import {
   CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
+import { EditorDocument } from "@/editor/types"
+import { BookText } from "lucide-react"
 
 type Props = {
   open: boolean
   setOpen: (open: boolean) => void
+  vaultDocuments: EditorDocument[]
+  onSelect: (doc: EditorDocument) => void
 }
 
-const OpenDocumentDialog = ({ open, setOpen }: Props) => {
+const OpenDocumentDialog = ({ open, setOpen, vaultDocuments, onSelect }: Props) => {
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Type a command or search..." />
+      <CommandInput placeholder="Type the name of the document to open ..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
-          <CommandItem>
-            <CalendarIcon />
-            <span>Calendar</span>
-          </CommandItem>
-          <CommandItem>
-            <FaceIcon />
-            <span>Search Emoji</span>
-          </CommandItem>
-          <CommandItem>
-            <RocketIcon />
-            <span>Launch</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Settings">
-          <CommandItem>
-            <PersonIcon />
-            <span>Profile</span>
-            <CommandShortcut>⌘P</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <EnvelopeClosedIcon />
-            <span>Mail</span>
-            <CommandShortcut>⌘B</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <GearIcon />
-            <span>Settings</span>
-            <CommandShortcut>⌘S</CommandShortcut>
-          </CommandItem>
+        <CommandGroup heading="Documenets from the vault">
+          { vaultDocuments.map(doc => (
+            <CommandItem key={doc.id} onSelect={() => onSelect(doc)}>
+              <BookText />
+              <span>{doc.name.replace(/\.md$/, '')}</span>
+            </CommandItem>
+          ))}
         </CommandGroup>
       </CommandList>
     </CommandDialog>
