@@ -14,7 +14,7 @@ export default function MultiTabCrepeEditor() {
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
-  const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(true)
+  const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(debounce(async (id: string, content: string) => {
     const document = openDocuments.find(doc => doc.id === id)
@@ -65,6 +65,7 @@ export default function MultiTabCrepeEditor() {
   useEffect(() => {
     window.electronAPI.onSearchDocument(async () => {
       console.log('Searching for documents...')
+      setOpenDocumentDialogOpen(true)
       // const vaultDocuments = await window.electronAPI.openDirectorySelector()
       // const newDocuments = vaultDocuments.filter((doc: EditorDocument) =>
       //   !openDocuments.some((existingDoc: EditorDocument) => existingDoc.name === doc.name)
