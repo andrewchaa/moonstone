@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Vault } from 'lucide-react'
-import { debounce } from 'lodash'
+import { debounce, set } from 'lodash'
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -30,15 +30,25 @@ export default function MultiTabCrepeEditor() {
     newContent: string,
     cursorPos?: number,
   ) => {
-    setOpenDocuments(openDocuments.map(doc =>
-      doc.id === id ? {
+    setOpenDocuments(prevDocuments => {
+      return prevDocuments.map(doc => doc.id === id ? {
         ...doc,
         content: newContent,
         cursorPos,
       } : doc
-    ))
+      )
+    });
 
     await saveContent(filePath, newContent)
+
+    setVaultDocuments(prevDocuments => {
+      return prevDocuments.map(doc => doc.id === id ? {
+        ...doc,
+        content: newContent,
+        cursorPos,
+      } : doc
+      )
+    })
   }
 
   const closeFile = (id: string) => {
