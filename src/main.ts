@@ -73,6 +73,7 @@ const createWindow = () => {
   })
 
   ipcMain.handle('write-file-content', async (event, filePath, content) => {
+    console.log('Writing file:', filePath)
     return new Promise<void>((resolve, reject) => {
       fs.writeFile(filePath, content, 'utf-8', (err) => {
         if (err) {

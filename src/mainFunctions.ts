@@ -7,7 +7,6 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
     submenu: [
       {
         label: 'Open document',
-        role: 'help',
         accelerator: 'CmdOrCtrl+p',
         click: () => {
           mainWindow.webContents.send('open-document')
@@ -15,23 +14,13 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
       },
       {
         label: 'Open vault',
-        role: 'help',
         accelerator: 'CmdOrCtrl+o',
         click: () => {
           mainWindow.webContents.send('open-vault')
         }
       },
       {
-        label: 'Reload',
-        role: 'help',
-        accelerator: 'CmdOrCtrl+r',
-        click: async () => {
-          mainWindow.reload()
-        }
-      },
-      {
         label: 'Quit',
-        role: 'quit',
         accelerator: 'CmdOrCtrl+q',
         click: () => {
           app.quit();
@@ -39,5 +28,42 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
       },
     ]
   }))
+  menu.append(new MenuItem({
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { role: 'pasteAndMatchStyle' },
+      { role: 'delete' },
+      { role: 'selectAll' },
+      { type: 'separator' },
+      {
+        label: 'Speech',
+        submenu: [
+          { role: 'startSpeaking' },
+          { role: 'stopSpeaking' }
+        ]
+      }
+    ]
+  })),
+  menu.append(new MenuItem({
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  }))
+
   Menu.setApplicationMenu(menu)
 }

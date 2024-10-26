@@ -16,15 +16,17 @@ export default function MultiTabCrepeEditor() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
-  const saveContent = useCallback(debounce(async (id: string, content: string) => {
-    const document = openDocuments.find(doc => doc.id === id)
-    if (document?.filePath) {
-      await window.electronAPI.writeFileContent(document)
-    }
-  }, 1000), [openDocuments])
+  const saveContent = useCallback(
+    debounce(async (filePath: string, content: string) => {
+        await window.electronAPI.writeFileContent(filePath, content)
+      },
+      1000
+    ), [openDocuments]
+  )
 
   const handleContentChange = async (
     id: string,
+    filePath: string,
     newContent: string,
     cursorPos?: number,
   ) => {
@@ -36,7 +38,7 @@ export default function MultiTabCrepeEditor() {
       } : doc
     ))
 
-    saveContent(id, newContent)
+    await saveContent(filePath, newContent)
   }
 
   const closeFile = (id: string) => {
@@ -176,7 +178,12 @@ export default function MultiTabCrepeEditor() {
               <CrepeEditor
                 content={document.content}
                 cursorPos={document.cursorPos}
-                onChange={(markdown, selection) => handleContentChange(document.id, markdown, selection)}
+                onChange={(markdown, selection) => handleContentChange(
+                  document.id,
+                  document.filePath,
+                  markdown,
+                  selection
+                )}
               />
             </TabsContent>
           ))}
