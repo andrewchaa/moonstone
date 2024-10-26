@@ -63,11 +63,16 @@ export default function MultiTabCrepeEditor() {
   }
 
   useEffect(() => {
-    window.electronAPI.onSearchDocument(async () => {
-      console.log('Searching for documents...')
+    window.electronAPI.onOpenDocument(() => {
       setOpenDocumentDialogOpen(true)
     })
   }, [openDocuments])
+
+  useEffect(() => {
+    window.electronAPI.onOpenVault(() => {
+      openVault()
+    })
+  }, [])
 
   return (
     <div className="flex h-screen bg-background">

@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   writeFileContent: (document: EditorDocument) =>
     ipcRenderer.invoke('write-file-content', document.filePath, document.content),
 
-  onSearchDocument: (callback) => ipcRenderer.on('search-documents', (_event) => callback()),
+  onOpenDocument: (callback: any) => ipcRenderer.on('open-document', (_event) => callback()),
+  onOpenVault: (callback: any) => ipcRenderer.on('open-vault', (_event) => callback()),
 });

@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { EditorDocument } from './editor/types';
+import { configureMenus } from './mainFunctions';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -25,32 +26,10 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  const menu = new Menu()
-  menu.append(new MenuItem({
-    label: 'File',
-    submenu: [
-      {
-        label: 'Search documents',
-        role: 'help',
-        accelerator: 'CmdOrCtrl+p',
-        click: async () => {
-          mainWindow.webContents.send('search-documents')
-        }
-      },
-      {
-        label: 'Reload',
-        role: 'help',
-        accelerator: 'CmdOrCtrl+r',
-        click: async () => {
-          mainWindow.reload()
-        }
-      },
-    ]
-  }))
-  Menu.setApplicationMenu(menu)
+  configureMenus(mainWindow)
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   ipcMain.handle('open-directory-selector', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
