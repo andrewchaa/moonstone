@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
-import { X, ChevronLeft, ChevronRight, Vault } from 'lucide-react'
-import { debounce, set } from 'lodash'
+import { X } from 'lucide-react'
+import { debounce } from 'lodash'
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
 import { EditorDocument } from '@/types/DocumentTypes'
 import CrepeEditor from '@/editor/Crepe'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 
 import '@/types/electronAPI'
+import Sidebar from '@/editor/Sidebar'
 
 export default function MultiTabCrepeEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
@@ -90,65 +90,15 @@ export default function MultiTabCrepeEditor() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <div className={`${isSidebarVisible ? 'w-64' : 'w-10'} transition-all duration-300 ease-in-out overflow-hidden border-r flex flex-col`}>
-        <div className="p-2 flex justify-end border-b">
-          <Button variant="ghost" size="icon" onClick={toggleSidebar} aria-label={isSidebarVisible ? "Hide sidebar" : "Show sidebar"}>
-            {isSidebarVisible ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </Button>
-        </div>
-        {isSidebarVisible && (
-          <>
-            <ScrollArea className="flex-1">
-              <div className="p-4">
-                <h2 className="mb-4 text-lg font-semibold">Open Files</h2>
-                <ul>
-                  {openDocuments.map((file) => (
-                    <li key={file.id} className="mb-2">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => setActiveFile(file.id)}
-                      >
-                        {file.name}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollArea>
-            <ScrollArea className="flex-1">
-              <div className="p-4">
-                <h2 className="mb-4 text-lg font-semibold">Vault Files</h2>
-                <ul>
-                  {vaultDocuments.map((file) => (
-                    <li key={file.id} className="mb-2">
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          if (!openDocuments.some(doc => doc.id === file.id)) {
-                            setOpenDocuments([...openDocuments, file])
-                            setActiveFile(file.id)
-                          }
-                        }}
-                      >
-                        {file.name}
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollArea>
-            <div className="p-4 border-t">
-              <Button className="w-full" onClick={openVault}>
-                <Vault className="mr-2 h-4 w-4" />
-                Open vault
-              </Button>
-            </div>
-          </>
-        )}
-      </div>
+      <Sidebar
+        isSidebarVisible={isSidebarVisible}
+        toggleSidebar={toggleSidebar}
+        openDocuments={openDocuments}
+        setOpenDocuments={setOpenDocuments}
+        setActiveFile={setActiveFile}
+        vaultDocuments={vaultDocuments}
+        openVault={openVault}
+      />
 
       {/* Main Editor Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
