@@ -1,15 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { X } from 'lucide-react'
 import { debounce } from 'lodash'
 
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EditorDocument } from '@/types/DocumentTypes'
-import CrepeEditor from '@/editor/Crepe'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
-
 import '@/types/electronAPI'
 import Sidebar from '@/editor/Sidebar'
+import MultiTabs from '@/editor/MultiTabs'
 
 export default function MoonstoneEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
@@ -116,40 +112,13 @@ export default function MoonstoneEditor() {
           }}
         />
 
-        <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
-          <ScrollArea className="w-full border-b" orientation="horizontal">
-            <TabsList>
-              {openDocuments.map((file) => (
-                <TabsTrigger key={file.id} value={file.id} className="flex items-center">
-                  {file.name}
-                  <div
-                    className="ml-2 h-4 w-4 p-0"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      closeFile(file.id)
-                    }}
-                  >
-                    <X className="h-3 w-3" />
-                  </div>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </ScrollArea>
-          {openDocuments.map((document) => (
-            <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
-              <CrepeEditor
-                content={document.content}
-                cursorPos={document.cursorPos}
-                onChange={(markdown, selection) => handleContentChange(
-                  document.id,
-                  document.filePath,
-                  markdown,
-                  selection
-                )}
-              />
-            </TabsContent>
-          ))}
-        </Tabs>
+        <MultiTabs
+          activeFile={activeFile}
+          setActiveFile={setActiveFile}
+          openDocuments={openDocuments}
+          closeFile={closeFile}
+          handleContentChange={handleContentChange}
+        />
       </div>
     </div>
   )
