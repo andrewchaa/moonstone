@@ -53,7 +53,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
     }
   }, []);
 
-  return <div className="crepe flex h-full flex-1 flex-col" ref={divRef} />
+  return (<div className="crepe flex h-full flex-1 flex-col" ref={divRef} />)
 };
 
 export default CrepeEditor;

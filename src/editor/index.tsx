@@ -116,6 +116,7 @@ export default function MoonstoneEditor() {
           activeFile={activeFile}
           setActiveFile={setActiveFile}
           openDocuments={openDocuments}
+          setOpenDocuments={setOpenDocuments}
           closeFile={closeFile}
           handleContentChange={handleContentChange}
         />
