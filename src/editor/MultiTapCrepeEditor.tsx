@@ -9,6 +9,8 @@ import { EditorDocument } from '@/editor/types'
 import CrepeEditor from '@/editor/Crepe'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 
+import '@/types/electronAPI'
+
 export default function MultiTabCrepeEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
