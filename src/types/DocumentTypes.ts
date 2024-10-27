@@ -5,7 +5,7 @@ export type EditorDocument = {
   name: string
   content: string
   cursorPos?: number
-  filePath?: string
+  filePath: string
 }
 
 export type EditorTab = {

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { SidebarFile } from "@/editor/types"
+import { SidebarFile } from "@/types/DocumentTypes"
 import { PlusCircle, FileText, Folder } from 'lucide-react'
 
 type Props = {

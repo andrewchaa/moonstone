@@ -6,7 +6,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { EditorDocument } from "@/editor/types"
+import { EditorDocument } from "@/types/DocumentTypes"
 import { BookText } from "lucide-react"
 
 type Props = {

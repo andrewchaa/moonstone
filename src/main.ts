@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { EditorDocument } from './editor/types';
+import { EditorDocument } from './types/DocumentTypes';
 import { configureMenus } from './mainFunctions';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

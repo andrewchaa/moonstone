@@ -5,7 +5,7 @@ import { debounce, set } from 'lodash'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { EditorDocument } from '@/editor/types'
+import { EditorDocument } from '@/types/DocumentTypes'
 import CrepeEditor from '@/editor/Crepe'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 
