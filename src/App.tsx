@@ -1,5 +1,5 @@
 import React from 'react';
-import MultiTabCrepeEditor from '@/editor/MultiTapCrepeEditor';
+import MoonstoneEditor from '@/editor';
 import './index.css';
 import '../globals.css';
 
@@ -7,7 +7,7 @@ import '../globals.css';
 const App: React.FC = () => {
   return (
     <div>
-      <MultiTabCrepeEditor />
+      <MoonstoneEditor />
     </div>
   );
 };

@@ -11,7 +11,7 @@ import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import Sidebar from '@/editor/Sidebar'
 
-export default function MultiTabCrepeEditor() {
+export default function MoonstoneEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
