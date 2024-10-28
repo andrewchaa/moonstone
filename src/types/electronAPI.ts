@@ -3,7 +3,7 @@ import { VaultFile } from "@/types/DocumentTypes";
 declare global {
   interface Window {
     electronAPI: {
-      writeFile: (filePath: string, content: string) => Promise<void>;
+      writeFile: (name: string, content: string) => Promise<void>;
       readFile: (filePath: string) => Promise<string>;
       openDirectorySelector: () => Promise<VaultFile[]>;
       onOpenDocumentDialog: (callback: (files: VaultFile[]) => void) => void;

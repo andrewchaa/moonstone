@@ -183,10 +183,11 @@ export const registerIpcMainHandlers = async (
       }
     })
 
-    ipcMain.handle('write-file', async (event, filePath, content) => {
-      console.log('Writing file:', filePath)
+    ipcMain.handle('write-file', async (event, name, content) => {
+      console.log('Writing file:', name)
+      const vaultPath = store.get('vaultPath') as string
       try {
-        fs.writeFile(filePath, content, 'utf-8')
+        fs.writeFile(`${vaultPath}/${name}`, content, 'utf-8')
       } catch (error) {
         console.error('Error writing file:', error)
         throw error

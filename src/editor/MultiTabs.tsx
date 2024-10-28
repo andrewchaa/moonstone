@@ -15,7 +15,6 @@ type Props = {
   closeFile: (id: string) => void
   handleContentChange: (
     id: string,
-    filePath: string,
     newContent: string,
     cursorPos?: number
   ) => void
@@ -39,13 +38,19 @@ export default function MultiTabs({
     setTimeout(() => titleInputRef.current?.focus(), 0)
   }
 
-  const handleTitleChange = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleTitleChange = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       const newTitle = event.currentTarget.value
-      setOpenDocuments(openDocuments.map(doc =>
-        doc.id === activeFile ? { ...doc, name: newTitle } : doc
-      ))
+      const activeDocument = openDocuments.find(doc => doc.id === activeFile)
+      if (!activeDocument) return
+
+      setOpenDocuments(openDocuments.filter(doc => doc.id !== activeDocument.id))
+      setOpenDocuments([...openDocuments, { ...activeDocument, id: newTitle, name: newTitle }])
+      // setOpenDocuments(openDocuments.map(doc =>
+      //   doc.id === activeFile ? { ...doc, name: newTitle } : doc
+      // ))
       setIsEditingTitle(false)
+      await window.electronAPI.writeFile(newTitle, activeDocument.content)
     }
   }
 
@@ -93,7 +98,6 @@ export default function MultiTabs({
           cursorPos={document.cursorPos}
           onChange={(markdown, selection) => handleContentChange(
             document.id,
-            document.filePath,
             markdown,
             selection
           )}

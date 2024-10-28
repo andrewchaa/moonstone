@@ -15,8 +15,8 @@ export default function MoonstoneEditor() {
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(
-    debounce(async (filePath: string, content: string) => {
-        await window.electronAPI.writeFile(filePath, content)
+    debounce(async (name: string, content: string) => {
+        await window.electronAPI.writeFile(name, content)
       },
       3000
     ), [openDocuments]
@@ -24,7 +24,6 @@ export default function MoonstoneEditor() {
 
   const handleContentChange = async (
     id: string,
-    filePath: string,
     newContent: string,
     cursorPos?: number,
   ) => {
@@ -37,7 +36,7 @@ export default function MoonstoneEditor() {
       )
     });
 
-    await saveContent(filePath, newContent)
+    await saveContent(id, newContent)
   }
 
   const closeFile = (id: string) => {
