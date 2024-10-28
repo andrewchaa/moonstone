@@ -1,10 +1,8 @@
-import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import path from 'path';
-import fs from 'fs';
 import Store from 'electron-store'
 
-import { EditorDocument } from './types/DocumentTypes';
-import { configureMenus, loadFilesFromDirectory } from './mainFunctions';
+import { configureMenus, loadFilesFromDirectory, registerIpcMainHandlers } from './mainFunctions';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -32,63 +30,7 @@ const createWindow = async () => {
 
   configureMenus(mainWindow)
 
-  ipcMain.handle('open-directory-selector', async () => {
-    const result = await dialog.showOpenDialog(mainWindow, {
-      properties: ['openDirectory']
-    })
-
-    if (!result.canceled && result.filePaths.length > 0) {
-      const directoryPath = result.filePaths[0]
-      store.set('vaultPath', directoryPath)
-      console.log('store', JSON.stringify(store))
-
-      return new Promise((resolve, reject) => {
-        fs.readdir(directoryPath, (err, files) => {
-          if (err) {
-            reject('Error reading directory:', err)
-          } else {
-            const documents: EditorDocument[] = files
-              .filter((file) => !file.startsWith('.'))
-              .map((file: string) => ({
-                id: file,
-                name: file,
-                content: fs.readFileSync(`${directoryPath}/${file}`, 'utf-8'),
-                filePath: `${directoryPath}/${file}`
-              }));
-            resolve(documents)
-          }
-        })
-      })
-    } else {
-      return []
-    }
-  })
-
-  ipcMain.handle('read-file-content', async (event, filePath) => {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, 'utf-8', (err, data) => {
-        if (err) {
-          reject('Error reading file:', err)
-        } else {
-          resolve(data)
-        }
-      })
-    })
-  })
-
-  ipcMain.handle('write-file-content', async (event, filePath, content) => {
-    console.log('Writing file:', filePath)
-    return new Promise<void>((resolve, reject) => {
-      fs.writeFile(filePath, content, 'utf-8', (err) => {
-        if (err) {
-          reject('Error writing file:', err)
-        } else {
-          resolve()
-        }
-      })
-    })
-  })
-
+  await registerIpcMainHandlers(mainWindow, store)
   mainWindow.webContents.openDevTools();
   mainWindow.webContents.on('did-finish-load', async () => {
     const vaultPath = store.get('vaultPath') as string

@@ -1,12 +1,13 @@
-import { EditorDocument } from "@/types/DocumentTypes";
+import { VaultFile } from "@/types/DocumentTypes";
 
 declare global {
   interface Window {
     electronAPI: {
       writeFileContent: (filePath: string, content: string) => Promise<void>;
-      openDirectorySelector: () => Promise<EditorDocument[]>;
+      openDirectorySelector: () => Promise<VaultFile[]>;
       onOpenDocument: (callback: () => void) => void;
       onOpenVault: (callback: () => void) => void;
+      onLoadVault: (callback: (files: VaultFile[]) => void) => void;
     };
   }
 }

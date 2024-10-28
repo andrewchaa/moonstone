@@ -1,5 +1,6 @@
-import { app, BrowserWindow, Menu, MenuItem } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import fs from 'fs/promises';
+import Store from 'electron-store'
 
 export const configureMenus = (mainWindow: BrowserWindow) => {
   const menu = new Menu()
@@ -103,3 +104,57 @@ export const loadFilesFromDirectory = async (directoryPath: string) => {
     return [];
   }
 };
+
+export const registerIpcMainHandlers = async (
+  mainWindow: BrowserWindow,
+  store: Store
+) => {
+    ipcMain.handle('open-directory-selector', async () => {
+      const result = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openDirectory']
+      })
+
+      if (!result.canceled && result.filePaths.length > 0) {
+        const directoryPath = result.filePaths[0]
+        store.set('vaultPath', directoryPath)
+        console.log('store', JSON.stringify(store))
+
+        try {
+          const files = await fs.readdir(directoryPath)
+          const documents = Promise.all(files
+            .filter((file) => !file.startsWith('.'))
+            .map(async (file: string) => ({
+              id: file,
+              name: file,
+              content: await fs.readFile(`${directoryPath}/${file}`, 'utf-8'),
+              filePath: `${directoryPath}/${file}`
+            })));
+          return documents
+        } catch (error) {
+          console.error('Error reading directory:', error)
+          return []
+        }
+      } else {
+        return []
+      }
+    })
+
+    ipcMain.handle('read-file', async (event, filePath) => {
+      try {
+        const content = await fs.readFile(filePath, 'utf-8')
+        return content
+      } catch (error) {
+        return ''
+      }
+    })
+
+    ipcMain.handle('write-file-content', async (event, filePath, content) => {
+      console.log('Writing file:', filePath)
+      try {
+        fs.writeFile(filePath, content, 'utf-8')
+      } catch (error) {
+        console.error('Error writing file:', error)
+        throw error
+      }
+    })
+  }

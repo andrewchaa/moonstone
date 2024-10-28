@@ -4,7 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   openDirectorySelector: () => ipcRenderer.invoke('open-directory-selector'),
-  readFileContent: (filePath: string) => ipcRenderer.invoke('read-file-content', filePath),
+  readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
   writeFileContent: (filePath: string, content: string) => ipcRenderer.invoke('write-file-content', filePath, content),
 
   onOpenDocument: (callback: any) => ipcRenderer.on('open-document', (_event) => callback()),

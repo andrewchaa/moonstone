@@ -62,14 +62,14 @@ export default function MoonstoneEditor() {
   }
 
   const openVault = async () => {
-    const directoryDocuments = await window.electronAPI.openDirectorySelector()
-    const newDocuments = directoryDocuments.filter(
-      (doc: EditorDocument) => !vaultDocuments.some(
-        (existingDoc: EditorDocument) => existingDoc.name === doc.name
+    const vaultFiles = await window.electronAPI.openDirectorySelector()
+    const newFiles = vaultFiles.filter(
+      (file: VaultFile) => !vaultDocuments.some(
+        (existingFile: VaultFile) => existingFile.name === file.name
       )
     )
 
-    setVaultDocuments([...vaultDocuments, ...newDocuments])
+    setVaultDocuments([...vaultDocuments, ...newFiles])
   }
 
   useEffect(() => {

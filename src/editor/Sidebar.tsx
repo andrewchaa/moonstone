@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Vault } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { EditorDocument } from "@/types/DocumentTypes"
+import { EditorDocument, VaultFile } from "@/types/DocumentTypes"
 
 type Props = {
   isSidebarVisible: boolean
@@ -9,7 +9,7 @@ type Props = {
   openDocuments: EditorDocument[]
   setOpenDocuments: (documents: EditorDocument[]) => void
   setActiveFile: (id: string) => void
-  vaultDocuments: EditorDocument[]
+  vaultDocuments: VaultFile[]
 }
 
 const Sidebar = ({
@@ -52,14 +52,15 @@ const Sidebar = ({
             <h2 className="mb-4 text-lg font-semibold">Vault Files</h2>
             <ul>
               {vaultDocuments.map((file) => (
-                <li key={file.id} className="mb-2">
+                <li key={file.name} className="mb-2">
                   <Button
                     variant="ghost"
                     className="w-full justify-start"
                     onClick={() => {
-                      if (!openDocuments.some(doc => doc.id === file.id)) {
+                      if (!openDocuments.some(doc => doc.id === file.name)) {
+
                         setOpenDocuments([...openDocuments, file])
-                        setActiveFile(file.id)
+                        setActiveFile(file.name)
                       }
                     }}
                   >
