@@ -16,9 +16,9 @@ export default function MoonstoneEditor() {
 
   const saveContent = useCallback(
     debounce(async (filePath: string, content: string) => {
-        await window.electronAPI.writeFileContent(filePath, content)
+        await window.electronAPI.writeFile(filePath, content)
       },
-      1000
+      3000
     ), [openDocuments]
   )
 
@@ -64,21 +64,23 @@ export default function MoonstoneEditor() {
   }
 
   useEffect(() => {
-    window.electronAPI.onOpenDocument(() => {
-      setOpenDocumentDialogOpen(true)
+    window.electronAPI.onOpenDocumentDialog(() => setOpenDocumentDialogOpen(true))
+    window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultDocuments(files))
+    window.electronAPI.onOpenVault(() => openVault())
+    window.electronAPI.onCloseDocument((name: string) => {closeFile(name)})
+    window.electronAPI.onOpenDocument((file: VaultFile) => {
+      if (!openDocuments.some(doc => doc.id === file.name)) {
+        const newDocument = {
+          id: file.name,
+          name: file.name,
+          content: '',
+          filePath: file.filePath,
+        }
+        setOpenDocuments([...openDocuments, newDocument])
+      }
+      setActiveFile(file.name)
     })
-  }, [openDocuments])
 
-  useEffect(() => {
-    window.electronAPI.onOpenVault(() => {
-      openVault()
-    })
-  }, [])
-
-  useEffect(() => {
-    window.electronAPI.onLoadVault((files: VaultFile[]) => {
-      setVaultDocuments(files)
-    })
   }, [])
 
   return (

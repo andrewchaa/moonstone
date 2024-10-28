@@ -28,7 +28,7 @@ const createWindow = async () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  configureMenus(mainWindow)
+  configureMenus(mainWindow, store)
 
   await registerIpcMainHandlers(mainWindow, store)
   mainWindow.webContents.openDevTools();

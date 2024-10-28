@@ -2,7 +2,10 @@ import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import fs from 'fs/promises';
 import Store from 'electron-store'
 
-export const configureMenus = (mainWindow: BrowserWindow) => {
+export const configureMenus = (
+  mainWindow: BrowserWindow,
+  store: Store
+) => {
   const menu = new Menu()
   menu.append(new MenuItem({
     label: 'Moonstone',
@@ -23,14 +26,32 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
         label: 'New document',
         accelerator: 'CmdOrCtrl+n',
         click: () => {
-
+          const vaultPath = store.get('vaultPath') as string
+          if (vaultPath) {
+            const valutFile = {
+              name: 'new-document.md',
+              filePath: `${vaultPath}/new-document.md`,
+              lastModified: new Date().toISOString()
+            }
+            fs.writeFile(valutFile.filePath, '')
+            mainWindow.webContents.send('open-document', valutFile)
+          } else {
+            dialog.showErrorBox('Error', 'No vault selected')
+          }
         }
       },
       {
         label: 'Open document',
         accelerator: 'CmdOrCtrl+p',
         click: () => {
-          mainWindow.webContents.send('open-document')
+          mainWindow.webContents.send('open-document-dialog')
+        }
+      },
+      {
+        label: 'Close document',
+        accelerator: 'CmdOrCtrl+w',
+        click: () => {
+          mainWindow.webContents.send('close-document')
         }
       },
       {
@@ -78,6 +99,18 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
       { role: 'togglefullscreen' }
     ]
   }))
+
+  menu.append(new MenuItem({
+    label: 'Window',
+    submenu: [
+      { role: 'minimize' },
+      { role: 'zoom' },
+      { type: 'separator' },
+      { role: 'front' },
+      { type: 'separator' },
+      { role: 'window' },
+    ]
+  })),
 
   Menu.setApplicationMenu(menu)
 }
@@ -148,7 +181,7 @@ export const registerIpcMainHandlers = async (
       }
     })
 
-    ipcMain.handle('write-file-content', async (event, filePath, content) => {
+    ipcMain.handle('write-file', async (event, filePath, content) => {
       console.log('Writing file:', filePath)
       try {
         fs.writeFile(filePath, content, 'utf-8')
