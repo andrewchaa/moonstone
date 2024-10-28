@@ -1,22 +1,35 @@
 import { app, BrowserWindow, Menu, MenuItem } from 'electron';
+import fs from 'fs/promises';
 
 export const configureMenus = (mainWindow: BrowserWindow) => {
   const menu = new Menu()
   menu.append(new MenuItem({
-    label: 'File',
+    label: 'Moonstone',
     submenu: [
-      {
-        label: 'Open document',
-        accelerator: 'CmdOrCtrl+p',
-        click: () => {
-          mainWindow.webContents.send('open-document')
-        }
-      },
       {
         label: 'Open vault',
         accelerator: 'CmdOrCtrl+o',
         click: () => {
           mainWindow.webContents.send('open-vault')
+        }
+      },
+    ]
+  }))
+  menu.append(new MenuItem({
+    label: 'File',
+    submenu: [
+      {
+        label: 'New document',
+        accelerator: 'CmdOrCtrl+n',
+        click: () => {
+
+        }
+      },
+      {
+        label: 'Open document',
+        accelerator: 'CmdOrCtrl+p',
+        click: () => {
+          mainWindow.webContents.send('open-document')
         }
       },
       {
@@ -67,3 +80,26 @@ export const configureMenus = (mainWindow: BrowserWindow) => {
 
   Menu.setApplicationMenu(menu)
 }
+
+export const loadFilesFromDirectory = async (directoryPath: string) => {
+  try {
+    const files = await fs.readdir(directoryPath);
+    const valutFiles = await Promise.all(files
+      .filter((file) => !file.startsWith('.'))
+      .map(async (file: string) => {
+        const filePath = `${directoryPath}/${file}`;
+        const name = file;
+        const lastModified = (await fs.stat(filePath)).mtime.toISOString();
+        return {
+          name,
+          filePath,
+          lastModified
+        }
+      }));
+    valutFiles.sort((a, b) => new Date(a.lastModified) > new Date(b.lastModified) ? -1 : 1);
+    return valutFiles;
+  } catch (err) {
+    console.error('Error reading directory:', err);
+    return [];
+  }
+};

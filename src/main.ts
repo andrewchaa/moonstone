@@ -1,15 +1,19 @@
 import { app, BrowserWindow, dialog, ipcMain, Menu, MenuItem } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import Store from 'electron-store'
+
 import { EditorDocument } from './types/DocumentTypes';
-import { configureMenus } from './mainFunctions';
+import { configureMenus, loadFilesFromDirectory } from './mainFunctions';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = () => {
+const store = new Store()
+
+const createWindow = async () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -28,9 +32,6 @@ const createWindow = () => {
 
   configureMenus(mainWindow)
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
-
   ipcMain.handle('open-directory-selector', async () => {
     const result = await dialog.showOpenDialog(mainWindow, {
       properties: ['openDirectory']
@@ -38,6 +39,9 @@ const createWindow = () => {
 
     if (!result.canceled && result.filePaths.length > 0) {
       const directoryPath = result.filePaths[0]
+      store.set('vaultPath', directoryPath)
+      console.log('store', JSON.stringify(store))
+
       return new Promise((resolve, reject) => {
         fs.readdir(directoryPath, (err, files) => {
           if (err) {
@@ -84,6 +88,15 @@ const createWindow = () => {
       })
     })
   })
+
+  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.on('did-finish-load', async () => {
+    const vaultPath = store.get('vaultPath') as string
+    if (vaultPath) {
+      const files = await loadFilesFromDirectory(vaultPath)
+      mainWindow.webContents.send('load-vault', files)
+    }
+  });
 };
 
 // This method will be called when Electron has finished
@@ -100,7 +113,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('activate', () => {
+app.on('activate', async () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {

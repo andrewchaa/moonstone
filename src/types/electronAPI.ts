@@ -1,3 +1,5 @@
+import { EditorDocument } from "@/types/DocumentTypes";
+
 declare global {
   interface Window {
     electronAPI: {

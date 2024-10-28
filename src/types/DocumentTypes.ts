@@ -8,6 +8,12 @@ export type EditorDocument = {
   filePath: string
 }
 
+export type VaultFile = {
+  name: string
+  filePath: string
+  lastModified: string
+}
+
 export type EditorTab = {
   title: string
   content: string

@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   onOpenDocument: (callback: any) => ipcRenderer.on('open-document', (_event) => callback()),
   onOpenVault: (callback: any) => ipcRenderer.on('open-vault', (_event) => callback()),
+  onLoadVault: (callback: any) => ipcRenderer.on('load-vault', (_event, files) => callback(files)),
 });

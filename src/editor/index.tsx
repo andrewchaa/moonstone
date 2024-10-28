@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { debounce } from 'lodash'
 
-import { EditorDocument } from '@/types/DocumentTypes'
+import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import Sidebar from '@/editor/Sidebar'
 import MultiTabs from '@/editor/MultiTabs'
 
 export default function MoonstoneEditor() {
-  const [vaultDocuments, setVaultDocuments] = useState<EditorDocument[]>([])
+  const [vaultDocuments, setVaultDocuments] = useState<VaultFile[]>([])
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
   const [isSidebarVisible, setIsSidebarVisible] = useState(true)
@@ -84,6 +84,13 @@ export default function MoonstoneEditor() {
     })
   }, [])
 
+  useEffect(() => {
+    window.electronAPI.onLoadVault((files: VaultFile[]) => {
+      console.log('onLoadVault', files)
+      setVaultDocuments(files)
+    })
+  }, [])
+
   return (
     <div className="flex h-screen bg-background">
       <Sidebar
@@ -93,7 +100,6 @@ export default function MoonstoneEditor() {
         setOpenDocuments={setOpenDocuments}
         setActiveFile={setActiveFile}
         vaultDocuments={vaultDocuments}
-        openVault={openVault}
       />
 
       {/* Main Editor Area */}

@@ -1,8 +1,8 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "name": "moonstone",
+  "productName": "Moonstone",
+  "version": "0.1.0",
+  "description": "Moonstone, a markdown note-taking editor",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -89,6 +89,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",

@@ -10,7 +10,6 @@ type Props = {
   setOpenDocuments: (documents: EditorDocument[]) => void
   setActiveFile: (id: string) => void
   vaultDocuments: EditorDocument[]
-  openVault: () => void
 }
 
 const Sidebar = ({
@@ -20,7 +19,6 @@ const Sidebar = ({
   setOpenDocuments,
   setActiveFile,
   vaultDocuments,
-  openVault,
 }: Props) => {
   return (
     <div className={`${isSidebarVisible ? 'w-64' : 'w-10'} transition-all duration-300 ease-in-out overflow-hidden border-r flex flex-col`}>
@@ -72,12 +70,6 @@ const Sidebar = ({
             </ul>
           </div>
         </ScrollArea>
-        <div className="p-4 border-t">
-          <Button className="w-full" onClick={openVault}>
-            <Vault className="mr-2 h-4 w-4" />
-            Open vault
-          </Button>
-        </div>
       </>
     )}
   </div>
