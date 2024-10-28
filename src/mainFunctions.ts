@@ -43,8 +43,10 @@ export const configureMenus = (
       {
         label: 'Open document',
         accelerator: 'CmdOrCtrl+p',
-        click: () => {
-          mainWindow.webContents.send('open-document-dialog')
+        click: async () => {
+          const vaultPath = store.get('vaultPath') as string
+          const files = await loadFilesFromDirectory(vaultPath)
+          mainWindow.webContents.send('open-document-dialog', files)
         }
       },
       {

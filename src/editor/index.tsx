@@ -64,7 +64,10 @@ export default function MoonstoneEditor() {
   }
 
   useEffect(() => {
-    window.electronAPI.onOpenDocumentDialog(() => setOpenDocumentDialogOpen(true))
+    window.electronAPI.onOpenDocumentDialog((files) => {
+      setVaultDocuments(files)
+      setOpenDocumentDialogOpen(true)
+    })
     window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultDocuments(files))
     window.electronAPI.onOpenVault(() => openVault())
     window.electronAPI.onCloseDocument((name: string) => {closeFile(name)})
