@@ -56,10 +56,15 @@ const Sidebar = ({
                   <Button
                     variant="ghost"
                     className="w-full justify-start"
-                    onClick={() => {
+                    onClick={async () => {
                       if (!openDocuments.some(doc => doc.id === file.name)) {
-
-                        setOpenDocuments([...openDocuments, file])
+                        const newDocument = {
+                          id: file.name,
+                          name: file.name,
+                          content: await window.electronAPI.readFile(file.filePath),
+                          filePath: file.filePath,
+                        }
+                        setOpenDocuments([...openDocuments, newDocument])
                         setActiveFile(file.name)
                       }
                     }}

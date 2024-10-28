@@ -4,6 +4,7 @@ declare global {
   interface Window {
     electronAPI: {
       writeFileContent: (filePath: string, content: string) => Promise<void>;
+      readFile: (filePath: string) => Promise<string>;
       openDirectorySelector: () => Promise<VaultFile[]>;
       onOpenDocument: (callback: () => void) => void;
       onOpenVault: (callback: () => void) => void;

@@ -38,15 +38,6 @@ export default function MoonstoneEditor() {
     });
 
     await saveContent(filePath, newContent)
-
-    setVaultDocuments(prevDocuments => {
-      return prevDocuments.map(doc => doc.id === id ? {
-        ...doc,
-        content: newContent,
-        cursorPos,
-      } : doc
-      )
-    })
   }
 
   const closeFile = (id: string) => {
@@ -86,7 +77,6 @@ export default function MoonstoneEditor() {
 
   useEffect(() => {
     window.electronAPI.onLoadVault((files: VaultFile[]) => {
-      console.log('onLoadVault', files)
       setVaultDocuments(files)
     })
   }, [])
@@ -108,12 +98,18 @@ export default function MoonstoneEditor() {
         <OpenDocumentDialog
           open={openDocumentDialogOpen}
           setOpen={setOpenDocumentDialogOpen}
-          vaultDocuments={vaultDocuments}
-          onSelect={(doc) => {
-            if (!openDocuments.some(file => file.id === doc.id)) {
-              setOpenDocuments([...openDocuments, doc])
+          files={vaultDocuments}
+          onSelect={async (file) => {
+            if (!openDocuments.some(doc => doc.id === file.name)) {
+              const newDocument = {
+                id: file.name,
+                name: file.name,
+                content: await window.electronAPI.readFile(file.filePath),
+                filePath: file.filePath,
+              }
+              setOpenDocuments([...openDocuments, newDocument])
             }
-            setActiveFile(doc.id)
+            setActiveFile(file.name)
             setOpenDocumentDialogOpen(false)
           }}
         />
