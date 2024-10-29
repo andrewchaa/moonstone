@@ -4,9 +4,10 @@ import { debounce } from 'lodash'
 import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
+import Sidebar from '@/editor/Sidebar'
 import MultiTabs from '@/editor/MultiTabs'
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import AppSidebar from "./Sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 
 export default function MoonstoneEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<VaultFile[]>([])
@@ -17,8 +18,8 @@ export default function MoonstoneEditor() {
 
   const saveContent = useCallback(
     debounce(async (name: string, content: string) => {
-      await window.electronAPI.writeFile(name, content)
-    },
+        await window.electronAPI.writeFile(name, content)
+      },
       3000
     ), [openDocuments]
   )
@@ -70,7 +71,7 @@ export default function MoonstoneEditor() {
     })
     window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultDocuments(files))
     window.electronAPI.onOpenVault(() => openVault())
-    window.electronAPI.onCloseDocument((name: string) => { closeFile(name) })
+    window.electronAPI.onCloseDocument((name: string) => {closeFile(name)})
     window.electronAPI.onOpenDocument((file: VaultFile) => {
       if (!openDocuments.some(doc => doc.id === file.name)) {
         const newDocument = {
@@ -88,45 +89,46 @@ export default function MoonstoneEditor() {
 
   return (
     <div className="flex h-screen bg-background">
-      <SidebarProvider>
-        <AppSidebar
+      <Sidebar
+        isSidebarVisible={isSidebarVisible}
+        toggleSidebar={toggleSidebar}
+        openDocuments={openDocuments}
+        setOpenDocuments={setOpenDocuments}
+        setActiveFile={setActiveFile}
+        vaultDocuments={vaultDocuments}
+      />
+
+      {/* Main Editor Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+
+        <OpenDocumentDialog
+          open={openDocumentDialogOpen}
+          setOpen={setOpenDocumentDialogOpen}
+          files={vaultDocuments}
+          onSelect={async (file) => {
+            if (!openDocuments.some(doc => doc.id === file.name)) {
+              const newDocument = {
+                id: file.name,
+                name: file.name,
+                content: await window.electronAPI.readFile(file.filePath),
+                filePath: file.filePath,
+              }
+              setOpenDocuments([...openDocuments, newDocument])
+            }
+            setActiveFile(file.name)
+            setOpenDocumentDialogOpen(false)
+          }}
+        />
+
+        <MultiTabs
+          activeFile={activeFile}
+          setActiveFile={setActiveFile}
           openDocuments={openDocuments}
           setOpenDocuments={setOpenDocuments}
-          setActiveFile={setActiveFile}
-          vaultDocuments={vaultDocuments}
+          closeFile={closeFile}
+          handleContentChange={handleContentChange}
         />
-        <main>
-          {/* <SidebarTrigger /> */}
-          <MultiTabs
-            activeFile={activeFile}
-            setActiveFile={setActiveFile}
-            openDocuments={openDocuments}
-            setOpenDocuments={setOpenDocuments}
-            closeFile={closeFile}
-            handleContentChange={handleContentChange}
-          />
-          <OpenDocumentDialog
-            open={openDocumentDialogOpen}
-            setOpen={setOpenDocumentDialogOpen}
-            files={vaultDocuments}
-            onSelect={async (file) => {
-              if (!openDocuments.some(doc => doc.id === file.name)) {
-                const newDocument = {
-                  id: file.name,
-                  name: file.name,
-                  content: await window.electronAPI.readFile(file.filePath),
-                  filePath: file.filePath,
-                }
-                setOpenDocuments([...openDocuments, newDocument])
-              }
-              setActiveFile(file.name)
-              setOpenDocumentDialogOpen(false)
-            }}
-          />
-
-
-        </main>
-      </SidebarProvider>
+      </div>
     </div>
   )
 }

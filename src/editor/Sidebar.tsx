@@ -1,85 +1,105 @@
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, Vault } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ChevronDown } from "lucide-react"
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { EditorDocument, VaultFile } from "@/types/DocumentTypes"
+import { Button } from "@/components/ui/button"
 
 type Props = {
-  isSidebarVisible: boolean
-  toggleSidebar: () => void
   openDocuments: EditorDocument[]
   setOpenDocuments: (documents: EditorDocument[]) => void
   setActiveFile: (id: string) => void
   vaultDocuments: VaultFile[]
 }
 
-const Sidebar = ({
-  isSidebarVisible,
-  toggleSidebar,
+export default function AppSidebar({
   openDocuments,
   setOpenDocuments,
   setActiveFile,
   vaultDocuments,
-}: Props) => {
+}: Props) {
   return (
-    <div className={`${isSidebarVisible ? 'w-64' : 'w-10'} transition-all duration-300 ease-in-out overflow-hidden border-r flex flex-col`}>
-    <div className="p-2 flex justify-end border-b">
-      <Button variant="ghost" size="icon" onClick={toggleSidebar} aria-label={isSidebarVisible ? "Hide sidebar" : "Show sidebar"}>
-        {isSidebarVisible ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-      </Button>
-    </div>
-    {isSidebarVisible && (
-      <>
-        <ScrollArea className="flex-1">
-          <div className="p-4">
-            <h2 className="mb-4 text-lg font-semibold">Open Files</h2>
-            <ul>
-              {openDocuments.map((file) => (
-                <li key={file.id} className="mb-2">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => setActiveFile(file.id)}
-                  >
-                    {file.name}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </ScrollArea>
-        <ScrollArea className="flex-1">
-          <div className="p-4">
-            <h2 className="mb-4 text-lg font-semibold">Vault Files</h2>
-            <ul>
-              {vaultDocuments.map((file) => (
-                <li key={file.name} className="mb-2">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={async () => {
-                      if (!openDocuments.some(doc => doc.id === file.name)) {
-                        const newDocument = {
-                          id: file.name,
-                          name: file.name,
-                          content: await window.electronAPI.readFile(file.filePath),
-                          filePath: file.filePath,
-                        }
-                        setOpenDocuments([...openDocuments, newDocument])
-                        setActiveFile(file.name)
-                      }
-                    }}
-                  >
-                    {file.name}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </ScrollArea>
-      </>
-    )}
-  </div>
+    <Sidebar>
+      <SidebarContent>
+
+        <Collapsible defaultOpen className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger>Application<ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" /></CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {openDocuments.map((doc) => (
+                    <SidebarMenuItem key={doc.id}>
+                      <SidebarMenuButton asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start"
+                          onClick={() => setActiveFile(doc.id)}
+                        >
+                          {doc.name}
+                        </Button>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+
+        </Collapsible>
+        <Collapsible defaultOpen className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger>
+                Vault
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {vaultDocuments.map((file) => (
+                    <SidebarMenuItem key={file.name}>
+                      <SidebarMenuButton asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start"
+                          onClick={async () => {
+                            if (!openDocuments.some(doc => doc.id === file.name)) {
+                              const newDocument = {
+                                id: file.name,
+                                name: file.name,
+                                content: await window.electronAPI.readFile(file.filePath),
+                                filePath: file.filePath,
+                              }
+                              setOpenDocuments([...openDocuments, newDocument])
+                              setActiveFile(file.name)
+                            }
+                          }}
+                        >
+                          {file.name}
+                        </Button>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+
+      </SidebarContent>
+    </Sidebar>
   )
 }
-
-export default Sidebar

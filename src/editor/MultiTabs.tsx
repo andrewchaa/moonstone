@@ -6,6 +6,7 @@ import { EditorDocument } from "@/types/DocumentTypes"
 import { Edit2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 type Props = {
   activeFile: string
@@ -46,9 +47,6 @@ export default function MultiTabs({
 
       setOpenDocuments(openDocuments.filter(doc => doc.id !== activeDocument.id))
       setOpenDocuments([...openDocuments, { ...activeDocument, id: newTitle, name: newTitle }])
-      // setOpenDocuments(openDocuments.map(doc =>
-      //   doc.id === activeFile ? { ...doc, name: newTitle } : doc
-      // ))
       setIsEditingTitle(false)
       await window.electronAPI.writeFile(newTitle, activeDocument.content)
     }
@@ -56,54 +54,55 @@ export default function MultiTabs({
 
   return (
     <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
-    <ScrollArea className="w-full border-b">
-      <TabsList>
-        {openDocuments.map((file) => (
-          <TabsTrigger key={file.id} value={file.id} className="flex items-center">
-            {file.name}
-            <div
-              className="ml-2 h-4 w-4 p-0"
-              onClick={(e) => {
-                e.stopPropagation()
-                closeFile(file.id)
-              }}
-            >
-              <X className="h-3 w-3" />
-            </div>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </ScrollArea>
-    {openDocuments.map((document) => (
-      <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
-        <div className="ml-28 flex items-center">
-          {isEditingTitle ? (
-            <Input
-              ref={titleInputRef}
-              defaultValue={activeFileName}
-              onKeyDown={handleTitleChange}
-              onBlur={() => setIsEditingTitle(false)}
-              className="text-2xl font-bold"
-            />
-          ) : (
-            <h2 className="text-2xl font-bold mr-2">{activeFileName.replace(/\.md$/, '')}</h2>
-          )}
-          <Button variant="ghost" size="sm" onClick={startEditingTitle}>
-            <Edit2 className="h-4 w-4" />
-          </Button>
-        </div>
+      <ScrollArea className="w-full border-b">
+      <SidebarTrigger />
+        <TabsList>
+          {openDocuments.map((file) => (
+            <TabsTrigger key={file.id} value={file.id} className="flex items-center">
+              {file.name}
+              <div
+                className="ml-2 h-4 w-4 p-0"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  closeFile(file.id)
+                }}
+              >
+                <X className="h-3 w-3" />
+              </div>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </ScrollArea>
+      {openDocuments.map((document) => (
+        <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
+          <div className="ml-28 flex items-center">
+            {isEditingTitle ? (
+              <Input
+                ref={titleInputRef}
+                defaultValue={activeFileName}
+                onKeyDown={handleTitleChange}
+                onBlur={() => setIsEditingTitle(false)}
+                className="text-2xl font-bold"
+              />
+            ) : (
+              <h2 className="text-2xl font-bold mr-2">{activeFileName.replace(/\.md$/, '')}</h2>
+            )}
+            <Button variant="ghost" size="sm" onClick={startEditingTitle}>
+              <Edit2 className="h-4 w-4" />
+            </Button>
+          </div>
 
-        <CrepeEditor
-          content={document.content}
-          cursorPos={document.cursorPos}
-          onChange={(markdown, selection) => handleContentChange(
-            document.id,
-            markdown,
-            selection
-          )}
-        />
-      </TabsContent>
-    ))}
-  </Tabs>
+          <CrepeEditor
+            content={document.content}
+            cursorPos={document.cursorPos}
+            onChange={(markdown, selection) => handleContentChange(
+              document.id,
+              markdown,
+              selection
+            )}
+          />
+        </TabsContent>
+      ))}
+    </Tabs>
   )
 }
