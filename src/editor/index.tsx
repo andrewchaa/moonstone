@@ -5,7 +5,7 @@ import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import MultiTabs from '@/editor/MultiTabs'
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import AppSidebar from "./Sidebar"
 
 export default function MoonstoneEditor() {
@@ -95,8 +95,7 @@ export default function MoonstoneEditor() {
           setActiveFile={setActiveFile}
           vaultDocuments={vaultDocuments}
         />
-        <main>
-          {/* <SidebarTrigger /> */}
+        <main className="overflow-x-hidden">
           <MultiTabs
             activeFile={activeFile}
             setActiveFile={setActiveFile}

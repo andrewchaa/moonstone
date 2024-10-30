@@ -132,5 +132,9 @@
     ul,ol {
       padding: 0;
     }
+
+    milkdown-code-block {
+      width: 100%;
+    }
   }
 }
