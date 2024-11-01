@@ -7,6 +7,7 @@ import { Edit2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { getDisplayName } from "../helper-functions/renderFunctions"
 
 type Props = {
   activeFile: string
@@ -85,7 +86,7 @@ export default function MultiTabs({
                 className="text-2xl font-bold"
               />
             ) : (
-              <h2 className="text-2xl font-bold mr-2">{activeFileName.replace(/\.md$/, '')}</h2>
+              <h2 className="text-2xl font-bold mr-2">{getDisplayName(activeFileName)}</h2>
             )}
             <Button variant="ghost" size="sm" onClick={startEditingTitle}>
               <Edit2 className="h-4 w-4" />

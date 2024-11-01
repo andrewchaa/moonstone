@@ -5,14 +5,13 @@ import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import MultiTabs from '@/editor/MultiTabs'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import AppSidebar from "./Sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import AppSidebar from "./AppSidebar"
 
 export default function MoonstoneEditor() {
   const [vaultDocuments, setVaultDocuments] = useState<VaultFile[]>([])
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
   const [activeFile, setActiveFile] = useState<string>('')
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true)
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(
@@ -46,10 +45,6 @@ export default function MoonstoneEditor() {
     if (activeFile === id && newFiles.length > 0) {
       setActiveFile(newFiles[0].id)
     }
-  }
-
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible)
   }
 
   const openVault = async () => {

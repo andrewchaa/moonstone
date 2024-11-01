@@ -13,6 +13,8 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { EditorDocument, VaultFile } from "@/types/DocumentTypes"
 import { Button } from "@/components/ui/button"
+import { getDisplayName } from "../helper-functions/renderFunctions"
+
 
 type Props = {
   openDocuments: EditorDocument[]
@@ -88,7 +90,7 @@ export default function AppSidebar({
                             }
                           }}
                         >
-                          {file.name}
+                          {getDisplayName(file.name)}
                         </Button>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
