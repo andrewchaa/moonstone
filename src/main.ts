@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import path from 'path';
 import Store from 'electron-store'
 
@@ -39,6 +39,11 @@ const createWindow = async () => {
       mainWindow.webContents.send('load-vault', files)
     }
   });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'allow' }
+  })
 };
 
 // This method will be called when Electron has finished
