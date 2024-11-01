@@ -90,7 +90,7 @@ export default function MoonstoneEditor() {
           setActiveFile={setActiveFile}
           vaultDocuments={vaultDocuments}
         />
-        <main className="overflow-x-hidden">
+        <main className="overflow-x-hidden w-full">
           <MultiTabs
             activeFile={activeFile}
             setActiveFile={setActiveFile}
