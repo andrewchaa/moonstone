@@ -1,16 +1,21 @@
 import { useCallback, useEffect, useState } from 'react'
 import { debounce } from 'lodash'
 
-import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
+import { VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import MultiTabs from '@/editor/MultiTabs'
 import { SidebarProvider } from "@/components/ui/sidebar"
 import AppSidebar from "./AppSidebar"
+import { useMoonstoneEditorContext } from '@/context/MoonstoneEditorContext'
 
 export default function MoonstoneEditor() {
-  const [vaultDocuments, setVaultDocuments] = useState<VaultFile[]>([])
-  const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([])
+  const {
+    vaultFiles,
+    setVaultFiles,
+    openDocuments,
+    setOpenDocuments
+  } = useMoonstoneEditorContext()
   const [activeFile, setActiveFile] = useState<string>('')
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
@@ -50,20 +55,20 @@ export default function MoonstoneEditor() {
   const openVault = async () => {
     const vaultFiles = await window.electronAPI.openDirectorySelector()
     const newFiles = vaultFiles.filter(
-      (file: VaultFile) => !vaultDocuments.some(
+      (file: VaultFile) => !vaultFiles.some(
         (existingFile: VaultFile) => existingFile.name === file.name
       )
     )
 
-    setVaultDocuments([...vaultDocuments, ...newFiles])
+    setVaultFiles([...vaultFiles, ...newFiles])
   }
 
   useEffect(() => {
     window.electronAPI.onOpenDocumentDialog((files) => {
-      setVaultDocuments(files)
+      setVaultFiles(files)
       setOpenDocumentDialogOpen(true)
     })
-    window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultDocuments(files))
+    window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultFiles(files))
     window.electronAPI.onOpenVault(() => openVault())
     window.electronAPI.onCloseDocument((name: string) => { closeFile(name) })
     window.electronAPI.onOpenDocument((file: VaultFile) => {
@@ -88,21 +93,19 @@ export default function MoonstoneEditor() {
           openDocuments={openDocuments}
           setOpenDocuments={setOpenDocuments}
           setActiveFile={setActiveFile}
-          vaultDocuments={vaultDocuments}
+          vaultFiles={vaultFiles}
         />
         <main className="overflow-x-hidden w-full">
           <MultiTabs
             activeFile={activeFile}
             setActiveFile={setActiveFile}
-            openDocuments={openDocuments}
-            setOpenDocuments={setOpenDocuments}
             closeFile={closeFile}
             handleContentChange={handleContentChange}
           />
           <OpenDocumentDialog
             open={openDocumentDialogOpen}
             setOpen={setOpenDocumentDialogOpen}
-            files={vaultDocuments}
+            files={vaultFiles}
             onSelect={async (file) => {
               if (!openDocuments.some(doc => doc.id === file.name)) {
                 const newDocument = {

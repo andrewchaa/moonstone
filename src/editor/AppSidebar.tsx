@@ -20,14 +20,14 @@ type Props = {
   openDocuments: EditorDocument[]
   setOpenDocuments: (documents: EditorDocument[]) => void
   setActiveFile: (id: string) => void
-  vaultDocuments: VaultFile[]
+  vaultFiles: VaultFile[]
 }
 
 export default function AppSidebar({
   openDocuments,
   setOpenDocuments,
   setActiveFile,
-  vaultDocuments,
+  vaultFiles,
 }: Props) {
   return (
     <Sidebar>
@@ -36,7 +36,10 @@ export default function AppSidebar({
         <Collapsible defaultOpen className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
-              <CollapsibleTrigger>Application<ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" /></CollapsibleTrigger>
+              <CollapsibleTrigger>
+                Application
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
             </SidebarGroupLabel>
             <CollapsibleContent>
               <SidebarGroupContent>
@@ -71,7 +74,7 @@ export default function AppSidebar({
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {vaultDocuments.map((file) => (
+                  {vaultFiles.map((file) => (
                     <SidebarMenuItem key={file.name}>
                       <SidebarMenuButton asChild>
                         <Button

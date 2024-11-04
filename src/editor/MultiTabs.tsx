@@ -2,18 +2,16 @@ import { KeyboardEvent, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CrepeEditor from "@/editor/Crepe"
-import { EditorDocument } from "@/types/DocumentTypes"
 import { Edit2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { getDisplayName } from "../helper-functions/renderFunctions"
+import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 
 type Props = {
   activeFile: string
   setActiveFile: (id: string) => void
-  openDocuments: EditorDocument[]
-  setOpenDocuments: (documents: EditorDocument[]) => void
   closeFile: (id: string) => void
   handleContentChange: (
     id: string,
@@ -25,11 +23,10 @@ type Props = {
 export default function MultiTabs({
   activeFile,
   setActiveFile,
-  openDocuments,
-  setOpenDocuments,
   closeFile,
   handleContentChange
 }: Props) {
+  const { openDocuments, setOpenDocuments } = useMoonstoneEditorContext()
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
