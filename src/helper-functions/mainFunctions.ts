@@ -193,4 +193,14 @@ export const registerIpcMainHandlers = async (
         throw error
       }
     })
+
+    ipcMain.handle('delete-file', async (event, name) => {
+      const vaultPath = store.get('vaultPath') as string
+      try {
+        fs.unlink(`${vaultPath}/${name}`)
+      } catch (error) {
+        console.error('Error deleting file:', error)
+        throw error
+      }
+    })
   }

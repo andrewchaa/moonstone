@@ -5,6 +5,7 @@ declare global {
     electronAPI: {
       writeFile: (name: string, content: string) => Promise<void>;
       readFile: (filePath: string) => Promise<string>;
+      deleteFile: (name: string) => Promise<void>;
       openDirectorySelector: () => Promise<VaultFile[]>;
       onOpenDocumentDialog: (callback: (files: VaultFile[]) => void) => void;
       onOpenDocument: (callback: (file: VaultFile) => void) => void;

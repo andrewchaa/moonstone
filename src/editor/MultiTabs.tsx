@@ -47,6 +47,7 @@ export default function MultiTabs({
       setOpenDocuments([...openDocuments, { ...activeDocument, id: newTitle, name: newTitle }])
       setIsEditingTitle(false)
       await window.electronAPI.writeFile(newTitle, activeDocument.content)
+      await window.electronAPI.deleteFile(activeDocument.id)
     }
   }
 
@@ -83,7 +84,7 @@ export default function MultiTabs({
                 className="text-2xl font-bold"
               />
             ) : (
-              <h2 className="text-2xl font-bold mr-2">{getDisplayName(activeFileName)}</h2>
+              <h1 className="text-3xl mr-2">{getDisplayName(activeFileName)}</h1>
             )}
             <Button variant="ghost" size="sm" onClick={startEditingTitle}>
               <Edit2 className="h-4 w-4" />
