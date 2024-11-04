@@ -24,14 +24,20 @@ const OpenDocumentDialog = ({ open, setOpen, onSelect }: Props) => {
     <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type the name of the document to open ..." />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty>
+          No results found.
+        </CommandEmpty>
         <CommandGroup heading="Documenets from the vault">
-          {vaultFiles.map(vaultDoc => (
-            <CommandItem key={vaultDoc.name} onSelect={() => onSelect(vaultDoc)}>
+          {vaultFiles.map(file => (
+            <CommandItem key={file.name} onSelect={() => onSelect(file)}>
               <BookText />
-              <span>{vaultDoc.name.replace(/\.md$/, '')}</span>
+              <span>{file.name.replace(/\.md$/, '')}</span>
             </CommandItem>
           ))}
+          <CommandItem key={'create-new-document'} onSelect={() => console.log('create a new file')}>
+            <BookText />
+            <span>Create a new document</span>
+          </CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>
