@@ -20,7 +20,7 @@ type Props = {
   ) => void
 }
 
-export default function MultiTabs({
+export default function   MultiTabs({
   activeFile,
   setActiveFile,
   closeFile,
@@ -54,7 +54,7 @@ export default function MultiTabs({
   return (
     <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
       <ScrollArea className="w-full border-b">
-      <SidebarTrigger />
+        <SidebarTrigger />
         <TabsList>
           {openDocuments.map((file) => (
             <TabsTrigger key={file.id} value={file.id} className="flex items-center">
