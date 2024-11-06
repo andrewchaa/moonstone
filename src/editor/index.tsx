@@ -120,8 +120,6 @@ export default function MoonstoneEditor() {
               setOpenDocumentDialogOpen(false)
             }}
           />
-
-
         </main>
       </SidebarProvider>
     </div>
