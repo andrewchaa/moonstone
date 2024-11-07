@@ -57,6 +57,20 @@ export const configureMenus = (
         }
       },
       {
+        label: 'Switch document',
+        accelerator: 'Ctrl+Tab',
+        click: () => {
+          mainWindow.webContents.send('switch-document')
+        }
+      },
+      {
+        label: 'Reverse switch document',
+        accelerator: 'Shift+Ctrl+Tab',
+        click: () => {
+          mainWindow.webContents.send('reverse-switch-document')
+        }
+      },
+      {
         label: 'Quit',
         accelerator: 'CmdOrCtrl+q',
         click: () => {

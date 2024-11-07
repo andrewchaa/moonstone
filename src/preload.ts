@@ -13,4 +13,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onCloseDocument: (callback: any) => ipcRenderer.on('close-document', (_event, name) => callback(name)),
   onOpenVault: (callback: any) => ipcRenderer.on('open-vault', (_event) => callback()),
   onLoadVault: (callback: any) => ipcRenderer.on('load-vault', (_event, files) => callback(files)),
+  onSwitchDocument: (callback: any) => ipcRenderer.on('switch-document', (_event) => callback()),
+  onReverseSwitchDocument: (callback: any) => ipcRenderer.on('reverse-switch-document', (_event) => callback()),
 });

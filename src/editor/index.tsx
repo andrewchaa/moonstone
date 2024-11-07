@@ -83,8 +83,21 @@ export default function MoonstoneEditor() {
         setActiveDocument(newDocument)
       }
     })
-
-  }, [])
+    window.electronAPI.onSwitchDocument(() => {
+      if (openDocuments.length > 1 && activeDocument) {
+        const currentIndex = openDocuments.findIndex(doc => doc.id === activeDocument.id)
+        const nextIndex = currentIndex === openDocuments.length - 1 ? 0 : currentIndex + 1
+        setActiveDocument(openDocuments[nextIndex])
+      }
+    })
+    window.electronAPI.onReverseSwitchDocument(() => {
+      if (openDocuments.length > 1 && activeDocument) {
+        const currentIndex = openDocuments.findIndex(doc => doc.id === activeDocument.id);
+        const prevIndex = currentIndex === 0 ? openDocuments.length - 1 : currentIndex - 1;
+        setActiveDocument(openDocuments[prevIndex]);
+      }
+    })
+  }, [openDocuments, activeDocument])
 
   return (
     <div className="flex h-screen bg-background">

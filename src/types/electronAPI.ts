@@ -12,6 +12,8 @@ declare global {
       onCloseDocument: (callback: (name: string) => void) => void;
       onOpenVault: (callback: () => void) => void;
       onLoadVault: (callback: (files: VaultFile[]) => void) => void;
+      onSwitchDocument: (callback: () => void) => void;
+      onReverseSwitchDocument: (callback: () => void) => void;
     };
   }
 }
