@@ -44,7 +44,7 @@ export default function MoonstoneEditor() {
     await saveContent(id, newContent)
   }
 
-  const closeFile = (id: string) => {
+  const closeDocument = (id: string) => {
     const newDocuments = openDocuments.filter(file => file.id !== id)
     setOpenDocuments(newDocuments)
     if (activeDocument?.id === id && newDocuments.length > 0) {
@@ -70,7 +70,11 @@ export default function MoonstoneEditor() {
     })
     window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultFiles(files))
     window.electronAPI.onOpenVault(() => openVault())
-    window.electronAPI.onCloseDocument((name: string) => { closeFile(name) })
+    window.electronAPI.onCloseDocument(() => {
+      if (activeDocument) {
+        closeDocument(activeDocument?.id)
+      }
+    })
     window.electronAPI.onOpenDocument((file: VaultFile) => {
       if (!openDocuments.some(doc => doc.id === file.name)) {
         const newDocument = {
@@ -112,7 +116,7 @@ export default function MoonstoneEditor() {
           <MultiTabs
             activeDocument={activeDocument || openDocuments[0]}
             setActiveDocument={setActiveDocument}
-            closeFile={closeFile}
+            closeFile={closeDocument}
             handleContentChange={handleContentChange}
           />
           <OpenDocumentDialog
