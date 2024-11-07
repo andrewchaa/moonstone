@@ -16,7 +16,7 @@ export default function MoonstoneEditor() {
     openDocuments,
     setOpenDocuments
   } = useMoonstoneEditorContext()
-  const [activeFile, setActiveFile] = useState<string>('')
+  const [activeDocument, setActiveDocument] = useState<string>('')
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(
@@ -47,8 +47,8 @@ export default function MoonstoneEditor() {
   const closeFile = (id: string) => {
     const newFiles = openDocuments.filter(file => file.id !== id)
     setOpenDocuments(newFiles)
-    if (activeFile === id && newFiles.length > 0) {
-      setActiveFile(newFiles[0].id)
+    if (activeDocument === id && newFiles.length > 0) {
+      setActiveDocument(newFiles[0].id)
     }
   }
 
@@ -81,7 +81,7 @@ export default function MoonstoneEditor() {
         }
         setOpenDocuments([...openDocuments, newDocument])
       }
-      setActiveFile(file.name)
+      setActiveDocument(file.name)
     })
 
   }, [])
@@ -92,13 +92,13 @@ export default function MoonstoneEditor() {
         <AppSidebar
           openDocuments={openDocuments}
           setOpenDocuments={setOpenDocuments}
-          setActiveFile={setActiveFile}
+          setActiveFile={setActiveDocument}
           vaultFiles={vaultFiles}
         />
         <main className="overflow-x-hidden w-full">
           <MultiTabs
-            activeFile={activeFile}
-            setActiveFile={setActiveFile}
+            activeDocument={activeDocument}
+            setActiveDocument={setActiveDocument}
             closeFile={closeFile}
             handleContentChange={handleContentChange}
           />
@@ -116,7 +116,7 @@ export default function MoonstoneEditor() {
                 }
                 setOpenDocuments([...openDocuments, newDocument])
               }
-              setActiveFile(file.name)
+              setActiveDocument(file.name)
               setOpenDocumentDialogOpen(false)
             }}
           />

@@ -10,8 +10,8 @@ import { getDisplayName } from "../helper-functions/renderFunctions"
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 
 type Props = {
-  activeFile: string
-  setActiveFile: (id: string) => void
+  activeDocument: string
+  setActiveDocument: (id: string) => void
   closeFile: (id: string) => void
   handleContentChange: (
     id: string,
@@ -21,8 +21,8 @@ type Props = {
 }
 
 export default function   MultiTabs({
-  activeFile,
-  setActiveFile,
+  activeDocument,
+  setActiveDocument,
   closeFile,
   handleContentChange
 }: Props) {
@@ -30,7 +30,7 @@ export default function   MultiTabs({
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
-  const activeFileName = openDocuments.find(file => file.id === activeFile)?.name || ''
+  const activeDocumentName = openDocuments.find(file => file.id === activeDocument)?.name || ''
 
   const startEditingTitle = () => {
     setIsEditingTitle(true)
@@ -40,19 +40,19 @@ export default function   MultiTabs({
   const handleTitleChange = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       const newTitle = event.currentTarget.value
-      const activeDocument = openDocuments.find(doc => doc.id === activeFile)
-      if (!activeDocument) return
+      const currentDocument = openDocuments.find(doc => doc.id === activeDocument)
+      if (!currentDocument) return
 
-      setOpenDocuments(openDocuments.filter(doc => doc.id !== activeDocument.id))
-      setOpenDocuments([...openDocuments, { ...activeDocument, id: newTitle, name: newTitle }])
+      setOpenDocuments(openDocuments.filter(doc => doc.id !== currentDocument.id))
+      setOpenDocuments([...openDocuments, { ...currentDocument, id: newTitle, name: newTitle }])
       setIsEditingTitle(false)
-      await window.electronAPI.writeFile(newTitle, activeDocument.content)
-      await window.electronAPI.deleteFile(activeDocument.id)
+      await window.electronAPI.writeFile(newTitle, currentDocument.content)
+      await window.electronAPI.deleteFile(currentDocument.id)
     }
   }
 
   return (
-    <Tabs value={activeFile} onValueChange={setActiveFile} className="flex-1 flex flex-col overflow-hidden">
+    <Tabs value={activeDocument} onValueChange={setActiveDocument} className="flex-1 flex flex-col overflow-hidden">
       <ScrollArea className="w-full border-b">
         <SidebarTrigger />
         <TabsList>
@@ -78,13 +78,13 @@ export default function   MultiTabs({
             {isEditingTitle ? (
               <Input
                 ref={titleInputRef}
-                defaultValue={activeFileName}
+                defaultValue={activeDocumentName}
                 onKeyDown={handleTitleChange}
                 onBlur={() => setIsEditingTitle(false)}
                 className="text-2xl font-bold"
               />
             ) : (
-              <h1 className="text-3xl mr-2">{getDisplayName(activeFileName)}</h1>
+              <h1 className="text-3xl mr-2">{getDisplayName(activeDocumentName)}</h1>
             )}
             <Button variant="ghost" size="sm" onClick={startEditingTitle}>
               <Edit2 className="h-4 w-4" />
