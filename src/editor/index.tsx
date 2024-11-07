@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { debounce } from 'lodash'
 
-import { VaultFile } from '@/types/DocumentTypes'
+import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
 import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
 import '@/types/electronAPI'
 import MultiTabs from '@/editor/MultiTabs'
@@ -16,7 +16,7 @@ export default function MoonstoneEditor() {
     openDocuments,
     setOpenDocuments
   } = useMoonstoneEditorContext()
-  const [activeDocument, setActiveDocument] = useState<string>('')
+  const [activeDocument, setActiveDocument] = useState<EditorDocument>()
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(
@@ -45,10 +45,10 @@ export default function MoonstoneEditor() {
   }
 
   const closeFile = (id: string) => {
-    const newFiles = openDocuments.filter(file => file.id !== id)
-    setOpenDocuments(newFiles)
-    if (activeDocument === id && newFiles.length > 0) {
-      setActiveDocument(newFiles[0].id)
+    const newDocuments = openDocuments.filter(file => file.id !== id)
+    setOpenDocuments(newDocuments)
+    if (activeDocument?.id === id && newDocuments.length > 0) {
+      setActiveDocument(newDocuments[newDocuments.length - 1])
     }
   }
 
@@ -80,8 +80,8 @@ export default function MoonstoneEditor() {
           filePath: file.filePath,
         }
         setOpenDocuments([...openDocuments, newDocument])
+        setActiveDocument(newDocument)
       }
-      setActiveDocument(file.name)
     })
 
   }, [])
@@ -92,12 +92,12 @@ export default function MoonstoneEditor() {
         <AppSidebar
           openDocuments={openDocuments}
           setOpenDocuments={setOpenDocuments}
-          setActiveFile={setActiveDocument}
+          setActiveDocument={setActiveDocument}
           vaultFiles={vaultFiles}
         />
         <main className="overflow-x-hidden w-full">
           <MultiTabs
-            activeDocument={activeDocument}
+            activeDocument={activeDocument || openDocuments[0]}
             setActiveDocument={setActiveDocument}
             closeFile={closeFile}
             handleContentChange={handleContentChange}
@@ -115,8 +115,8 @@ export default function MoonstoneEditor() {
                   filePath: file.filePath,
                 }
                 setOpenDocuments([...openDocuments, newDocument])
+                setActiveDocument(newDocument)
               }
-              setActiveDocument(file.name)
               setOpenDocumentDialogOpen(false)
             }}
           />

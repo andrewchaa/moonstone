@@ -19,14 +19,14 @@ import { getDisplayName } from "../helper-functions/renderFunctions"
 type Props = {
   openDocuments: EditorDocument[]
   setOpenDocuments: (documents: EditorDocument[]) => void
-  setActiveFile: (id: string) => void
+  setActiveDocument: (doc: EditorDocument) => void
   vaultFiles: VaultFile[]
 }
 
 export default function AppSidebar({
   openDocuments,
   setOpenDocuments,
-  setActiveFile,
+  setActiveDocument,
   vaultFiles,
 }: Props) {
   return (
@@ -50,7 +50,7 @@ export default function AppSidebar({
                         <Button
                           variant="ghost"
                           className="w-full justify-start"
-                          onClick={() => setActiveFile(doc.id)}
+                          onClick={() => setActiveDocument(doc)}
                         >
                           {doc.name}
                         </Button>
@@ -89,7 +89,7 @@ export default function AppSidebar({
                                 filePath: file.filePath,
                               }
                               setOpenDocuments([...openDocuments, newDocument])
-                              setActiveFile(file.name)
+                              setActiveDocument(newDocument)
                             }
                           }}
                         >
