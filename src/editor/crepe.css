@@ -58,7 +58,7 @@
       color: var(--crepe-color-inline-code);
       background: color-mix(in srgb, var(--crepe-color-inline-area), transparent 40%);
       font-family: var(--crepe-font-code);
-      padding: 0 10px;
+      padding: 0 3px;
       border-radius: 4px;
       font-size: 87.5%;
       display: inline-block;
