@@ -60,7 +60,7 @@ export default function   MultiTabs({
       }}
       className="flex-1 flex flex-col overflow-hidden"
     >
-      <ScrollArea className="w-full border-b">
+      {/* <ScrollArea className="w-full border-b">
         <SidebarTrigger />
         <TabsList>
           {openDocuments.map((file) => (
@@ -78,10 +78,10 @@ export default function   MultiTabs({
             </TabsTrigger>
           ))}
         </TabsList>
-      </ScrollArea>
+      </ScrollArea> */}
       {openDocuments.map((document) => (
         <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
-          <div className="ml-14 flex items-center">
+          {/* <div className="ml-14 flex items-center">
             {isEditingTitle ? (
               <Input
                 ref={titleInputRef}
@@ -96,7 +96,7 @@ export default function   MultiTabs({
             <Button variant="ghost" size="sm" onClick={startEditingTitle}>
               <Edit2 className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
 
           <CrepeEditor
             content={document.content}
