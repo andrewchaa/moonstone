@@ -24,3 +24,8 @@ export type SidebarFile = {
   title: string
   filePath: string
 }
+
+export type DocumentHeading = {
+  depth: number
+  text: string
+}

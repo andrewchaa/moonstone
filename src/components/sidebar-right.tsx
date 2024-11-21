@@ -14,6 +14,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar"
 import { PlusIcon } from "@radix-ui/react-icons"
+import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 
 // This is sample data.
 const data = {
@@ -41,6 +42,7 @@ const data = {
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { activeDocument } = useMoonstoneEditorContext()
   return (
     <Sidebar
       collapsible="none"
@@ -51,9 +53,9 @@ export function SidebarRight({
         <NavUser user={data.user} />
       </SidebarHeader>
       <SidebarContent>
-        <DatePicker />
-        <SidebarSeparator className="mx-0" />
-        <Calendars calendars={data.calendars} />
+        {/* <DatePicker /> */}
+        {/* <SidebarSeparator className="mx-0" /> */}
+        {/* <Calendars calendars={data.calendars} /> */}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

@@ -25,15 +25,24 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
     const crepe = new Crepe({
       root: divRef.current,
       defaultValue: content,
-
     });
 
     crepe.editor.config((ctx) => {
       ctx.get(listenerCtx)
-        .markdownUpdated((ctx, markdown) => onChange(
-          markdown,
-          ctx.get(editorViewCtx).state.selection.from,
-        ))
+        .markdownUpdated((ctx, markdown) => {
+          onChange(markdown, ctx.get(editorViewCtx).state.selection.from)
+          const doc = ctx.get(editorViewCtx).state.doc;
+          const headings = [];
+
+          doc.descendants((node, pos) => {
+            if (node.type.name === 'heading') {
+              const depth = node.attrs.level;
+              const text = node.textContent;
+              headings.push({ depth, text });
+            }
+          });
+          console.log('headings', headings);
+        })
     })
     .use(listener)
 

@@ -134,7 +134,7 @@ export function Page() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="mx-auto h-[100vh] w-full max-w-3xl bg-muted/50">
+        <div className="mx-auto h-[100vh] w-full max-w-6xl bg-muted/50">
           <MultiTabs
             activeDocument={activeDocument || openDocuments[0]}
             setActiveDocument={setActiveDocument}

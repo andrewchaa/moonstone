@@ -1,5 +1,7 @@
 .milkdown {
   .ProseMirror {
+    padding: 30px 60px;
+
     h1,
     h2,
     h3,

@@ -26,8 +26,9 @@ export function NavOpenDocuments({ documents }: Props) {
       <SidebarGroupContent>
         <SidebarMenu>
           {documents.map((document) => (
-            <SidebarMenuItem>
+            <SidebarMenuItem key={`item-${document.id}`}>
               <SidebarMenuButton asChild
+                isActive={activeDocument?.id === document.id}
                 onClick={() => setActiveDocument(document)}
               >
                 <a href="#">
