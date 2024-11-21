@@ -1,11 +1,13 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
 import { EditorDocument, VaultFile } from '@/types/DocumentTypes';
 
 type ContextType = {
   vaultFiles: VaultFile[]
-  setVaultFiles: React.Dispatch<React.SetStateAction<VaultFile[]>>
+  setVaultFiles: (files: VaultFile[]) => void
   openDocuments: EditorDocument[]
-  setOpenDocuments: React.Dispatch<React.SetStateAction<EditorDocument[]>>
+  setOpenDocuments: (documents: EditorDocument[]) => void
+  activeDocument: EditorDocument | undefined
+  setActiveDocument: (doc: EditorDocument) => void
 }
 
 type Prop = {
@@ -17,10 +19,15 @@ const MoonstoneEditorContext = createContext<ContextType | undefined>(undefined)
 export const MoonstoneEditorContextProvider = ({ children }: Prop) => {
   const [vaultFiles, setVaultFiles] = useState<VaultFile[]>([]);
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([]);
+  const [activeDocument, setActiveDocument] = useState<EditorDocument>()
 
   return (
     <MoonstoneEditorContext.Provider
-      value={{ vaultFiles, setVaultFiles, openDocuments, setOpenDocuments }}
+      value={{
+        vaultFiles, setVaultFiles,
+        openDocuments, setOpenDocuments,
+        activeDocument, setActiveDocument
+      }}
     >
       {children}
     </MoonstoneEditorContext.Provider>

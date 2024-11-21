@@ -3,8 +3,8 @@ import { Crepe } from '@milkdown/crepe';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { editorViewCtx } from '@milkdown/core';
 import { Selection } from '@milkdown/prose/state';
-// import "@milkdown/crepe/theme/common/style.css";
-// import "@milkdown/crepe/theme/nord.css";
+import "@milkdown/crepe/theme/common/style.css";
+import "@milkdown/crepe/theme/nord.css";
 // import "./crepe.css";
 
 type Props = {
