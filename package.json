@@ -4,6 +4,10 @@
   "version": "0.1.0",
   "description": "Moonstone, a markdown note-taking editor",
   "main": ".vite/build/main.js",
+  "volta": {
+    "node": "20.13.1",
+    "npm": "10.8.0"
+  },
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
