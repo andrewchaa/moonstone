@@ -42,7 +42,8 @@ const data = {
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const { activeDocument } = useMoonstoneEditorContext()
+  const { documentHeadings } = useMoonstoneEditorContext()
+
   return (
     <Sidebar
       collapsible="none"
@@ -56,6 +57,13 @@ export function SidebarRight({
         {/* <DatePicker /> */}
         {/* <SidebarSeparator className="mx-0" /> */}
         {/* <Calendars calendars={data.calendars} /> */}
+        <ul>
+          {documentHeadings.map((heading, index) => (
+            <li key={index}>
+              <a href={`#${heading.text}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

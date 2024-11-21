@@ -6,14 +6,16 @@ import { Selection } from '@milkdown/prose/state';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
 import "./crepe.css";
+import { DocumentHeading } from '@/types/DocumentTypes';
 
 type Props = {
   content: string
   cursorPos?: number
   onChange: (markdown: string, cursorPos: number) => void
+  onTocChange: (headings: DocumentHeading[]) => void
 }
 
-const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
+const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChange }) => {
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +34,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
         .markdownUpdated((ctx, markdown) => {
           onChange(markdown, ctx.get(editorViewCtx).state.selection.from)
           const doc = ctx.get(editorViewCtx).state.doc;
-          const headings = [];
+          const headings: DocumentHeading[] = [];
 
           doc.descendants((node, pos) => {
             if (node.type.name === 'heading') {
@@ -42,6 +44,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
             }
           });
           console.log('headings', headings);
+          onTocChange(headings);
         })
     })
     .use(listener)

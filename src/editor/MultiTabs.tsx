@@ -27,7 +27,10 @@ export default function   MultiTabs({
   closeFile,
   handleContentChange
 }: Props) {
-  const { openDocuments, setOpenDocuments } = useMoonstoneEditorContext()
+  const {
+    openDocuments, setOpenDocuments,
+    setDocumentHeadings
+  } = useMoonstoneEditorContext()
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const titleInputRef = useRef<HTMLInputElement>(null)
 
@@ -106,6 +109,7 @@ export default function   MultiTabs({
               markdown,
               selection
             )}
+            onTocChange={(headings) => {setDocumentHeadings(headings)}}
           />
         </TabsContent>
       ))}
