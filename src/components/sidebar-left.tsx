@@ -159,9 +159,9 @@ export function SidebarLeft({
       </SidebarHeader>
       <SidebarContent>
         <NavOpenDocuments documents={openDocuments} />
-        <NavWorkspaces workspaces={data.workspaces} />
+        {/* <NavWorkspaces workspaces={data.workspaces} />
         <NavFavorites favorites={data.favorites} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

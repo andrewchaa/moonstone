@@ -5,7 +5,7 @@ import { editorViewCtx } from '@milkdown/core';
 import { Selection } from '@milkdown/prose/state';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
-// import "./crepe.css";
+import "./crepe.css";
 
 type Props = {
   content: string
