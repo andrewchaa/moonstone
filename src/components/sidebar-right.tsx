@@ -60,7 +60,7 @@ export function SidebarRight({
         <ul>
           {documentHeadings.map((heading, index) => (
             <li key={index}>
-              <a href={`#${heading.text}`}>{heading.text}</a>
+              <a href={`#${heading.title}`}>{heading.title}</a>
             </li>
           ))}
         </ul>

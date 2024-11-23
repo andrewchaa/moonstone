@@ -55,7 +55,7 @@ export const transformHeadings = (headings: DocumentHeading[]): any[] => {
   const stack: any[] = [];
 
   headings.forEach((heading) => {
-    const item = [heading.text, []];
+    const item = [heading.title, []];
 
     while (stack.length && stack[stack.length - 1].depth >= heading.depth) {
       stack.pop();

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { DocumentHeading, EditorDocument, VaultFile } from '@/types/DocumentTypes';
+import { Crepe } from '@milkdown/crepe';
 
 type ContextType = {
   vaultFiles: VaultFile[]
@@ -10,6 +11,8 @@ type ContextType = {
   setActiveDocument: (doc: EditorDocument) => void
   documentHeadings: DocumentHeading[]
   setDocumentHeadings: (headings: DocumentHeading[]) => void
+  crepeInstance: Crepe | null
+  setCrepeInstance: (crepe: Crepe | null) => void
 }
 
 type Prop = {
@@ -23,6 +26,7 @@ export const MoonstoneEditorContextProvider = ({ children }: Prop) => {
   const [openDocuments, setOpenDocuments] = useState<EditorDocument[]>([]);
   const [activeDocument, setActiveDocument] = useState<EditorDocument>()
   const [documentHeadings, setDocumentHeadings] = useState<DocumentHeading[]>([])
+  const [crepeInstance, setCrepeInstance] = useState<Crepe | null>(null)
 
   return (
     <MoonstoneEditorContext.Provider
@@ -30,7 +34,8 @@ export const MoonstoneEditorContextProvider = ({ children }: Prop) => {
         vaultFiles, setVaultFiles,
         openDocuments, setOpenDocuments,
         activeDocument, setActiveDocument,
-        documentHeadings, setDocumentHeadings
+        documentHeadings, setDocumentHeadings,
+        crepeInstance, setCrepeInstance
       }}
     >
       {children}

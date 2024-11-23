@@ -7,6 +7,7 @@ import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
 import "./crepe.css";
 import { DocumentHeading } from '@/types/DocumentTypes';
+import { useMoonstoneEditorContext } from '../context/MoonstoneEditorContext';
 
 type Props = {
   content: string
@@ -16,6 +17,7 @@ type Props = {
 }
 
 const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChange }) => {
+  const { setCrepeInstance } = useMoonstoneEditorContext();
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +42,10 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChang
             if (node.type.name === 'heading') {
               const depth = node.attrs.level;
               const text = node.textContent;
-              headings.push({ depth, text });
+              headings.push({ depth, title: text, pos });
             }
           });
+          console.log(headings);
           onTocChange(headings);
         })
     })
@@ -50,6 +53,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChang
 
     crepe.create().then(() => {
       (crepeRef as MutableRefObject<Crepe>).current = crepe;
+      setCrepeInstance(crepe);
       crepe.editor.ctx.get(editorViewCtx).focus();
 
       if (cursorPos) {
@@ -62,6 +66,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChang
 
     return () => {
       crepe.destroy();
+      setCrepeInstance(null);
     }
   }, []);
 

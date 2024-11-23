@@ -27,5 +27,6 @@ export type SidebarFile = {
 
 export type DocumentHeading = {
   depth: number
-  text: string
+  title: string
+  pos: number
 }

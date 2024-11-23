@@ -1,5 +1,8 @@
 import * as React from "react"
 import { GalleryVerticalEnd } from "lucide-react"
+import { editorViewCtx } from '@milkdown/core';
+import { Selection } from '@milkdown/prose/state';
+import { outline } from "@milkdown/utils";
 
 import {
   Sidebar,
@@ -17,7 +20,24 @@ import {
 import { useMoonstoneEditorContext } from "../context/MoonstoneEditorContext"
 
 export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { documentHeadings } = useMoonstoneEditorContext()
+  const { crepeInstance, documentHeadings } = useMoonstoneEditorContext()
+
+  const scrollToPosition = (pos: number) => {
+    const view = crepeInstance?.editor.ctx.get(editorViewCtx)
+    console.log('outline', outline()(crepeInstance?.editor.ctx))
+    if (!view) {
+      return
+    }
+    view.focus()
+
+    console.log('view', view)
+    console.log('scrolling to', pos)
+    view.dispatch(
+      view.state.tr.setSelection(Selection.near(view.state.doc.resolve(pos)))
+    )
+    view.dom.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+    // view.dom.scrollTo(0, pos)
+  }
 
   return (
     <Sidebar side='right' {...props}>
@@ -47,10 +67,12 @@ export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>
                 .map((heading) => {
                   if (heading.depth === 1) {
                     return (
-                      <SidebarMenuItem key={heading.text}>
-                        <SidebarMenuButton asChild>
+                      <SidebarMenuItem key={heading.title}>
+                        <SidebarMenuButton asChild
+                          onClick={() => scrollToPosition(heading.pos)}
+                        >
                           <a href='#' className="font-medium">
-                            {heading.text}
+                            {heading.title}
                           </a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -58,11 +80,11 @@ export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>
                   }
 
                   return (
-                    <SidebarMenuItem key={heading.text}>
+                    <SidebarMenuItem key={heading.title}>
                         <SidebarMenuSub>
-                          <SidebarMenuSubItem key={heading.text}>
+                          <SidebarMenuSubItem key={heading.title}>
                             <SidebarMenuSubButton asChild isActive={true}>
-                              <a href='#'>{heading.text}</a>
+                              <a href='#'>{heading.title}</a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         </SidebarMenuSub>
