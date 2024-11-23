@@ -1,5 +1,6 @@
 import { SidebarLeft } from "@/components/sidebar-left"
 import { SidebarRight } from "@/components/sidebar-right"
+import { SidebarRight1 } from "@/components/sidebar-right-1"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -165,7 +166,7 @@ export function Page() {
           <div className="mx-auto h-[100vh] w-full max-w-3xl rounded-xl bg-muted/50" /> */}
         </div>
       </SidebarInset>
-      <SidebarRight />
+      <SidebarRight1 />
     </SidebarProvider>
   )
 }
