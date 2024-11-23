@@ -19,6 +19,7 @@ import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
 import { debounce } from "lodash"
 import { useCallback, useEffect, useState } from "react"
+import { SidebarRight2 } from "../../components/sidebar-right-2"
 
 export function Page() {
   const {
@@ -166,7 +167,7 @@ export function Page() {
           <div className="mx-auto h-[100vh] w-full max-w-3xl rounded-xl bg-muted/50" /> */}
         </div>
       </SidebarInset>
-      <SidebarRight1 />
+      <SidebarRight2 />
     </SidebarProvider>
   )
 }

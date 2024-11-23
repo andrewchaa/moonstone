@@ -43,7 +43,6 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChang
               headings.push({ depth, text });
             }
           });
-          console.log('headings', headings);
           onTocChange(headings);
         })
     })
