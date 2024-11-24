@@ -35,18 +35,18 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChang
       ctx.get(listenerCtx)
         .markdownUpdated((ctx, markdown) => {
           onChange(markdown, ctx.get(editorViewCtx).state.selection.from)
-          const doc = ctx.get(editorViewCtx).state.doc;
-          const headings: DocumentHeading[] = [];
+          // const doc = ctx.get(editorViewCtx).state.doc;
+          // const headings: DocumentHeading[] = [];
 
-          doc.descendants((node, pos) => {
-            if (node.type.name === 'heading') {
-              const depth = node.attrs.level;
-              const text = node.textContent;
-              headings.push({ depth, title: text, pos });
-            }
-          });
-          console.log(headings);
-          onTocChange(headings);
+          // doc.descendants((node, pos) => {
+          //   if (node.type.name === 'heading') {
+          //     const depth = node.attrs.level;
+          //     const text = node.textContent;
+          //     headings.push({ depth, title: text, pos });
+          //   }
+          // });
+          // console.log(headings);
+          // onTocChange(headings);
         })
     })
     .use(listener)

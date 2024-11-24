@@ -21,23 +21,39 @@ import { useMoonstoneEditorContext } from "../context/MoonstoneEditorContext"
 
 export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { crepeInstance, documentHeadings } = useMoonstoneEditorContext()
+  const [headingElements, setHeadingElements] = React.useState<Element[]>([])
 
-  const scrollToPosition = (pos: number) => {
+  React.useEffect(() => {
     const view = crepeInstance?.editor.ctx.get(editorViewCtx)
-    console.log('outline', outline()(crepeInstance?.editor.ctx))
-    if (!view) {
-      return
-    }
-    view.focus()
+    const nodeList = view?.dom.querySelectorAll('h1, h2')
+    setHeadingElements((nodeList ? Array.from(nodeList) : []))
+    console.log('headings', (nodeList ? Array.from(nodeList) : []))
+  }, [crepeInstance?.editor.ctx])
 
-    console.log('view', view)
-    console.log('scrolling to', pos)
-    view.dispatch(
-      view.state.tr.setSelection(Selection.near(view.state.doc.resolve(pos)))
-    )
-    view.dom.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
-    // view.dom.scrollTo(0, pos)
+  const scroll = (e: Event,  element: Element) => {
+    e.preventDefault();
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
+
+  // const scrollToPosition = (pos: number) => {
+  //   const view = crepeInstance?.editor.ctx.get(editorViewCtx)
+  //   console.log('outline', outline()(crepeInstance?.editor.ctx))
+  //   if (!view) {
+  //     return
+  //   }
+
+  //   view.dispatch(
+  //     view.state.tr
+  //       .setSelection(Selection.near(view.state.doc.resolve(pos)))
+  //     // .scrollIntoView()
+  //   )
+  //   view.focus()
+  //   view.dom.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+  //   const domheadings = view.dom.querySelectorAll('h1, h2');
+  //   console.log('dom', view.dom.querySelectorAll('h1, h2'))
+  //   domheadings[20].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+  //   // view.dom.scrollTo(0, pos)
+  // }
 
   return (
     <Sidebar side='right' {...props}>
@@ -62,34 +78,34 @@ export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>
         <SidebarGroup>
           <SidebarMenu>
             {
-              documentHeadings
-                .filter(heading => heading.depth < 3)
-                .map((heading) => {
-                  if (heading.depth === 1) {
+              headingElements
+                .map((element) => {
+                  console.log('element', element.nodeName)
+                  if (element.nodeName === 'H1') {
                     return (
-                      <SidebarMenuItem key={heading.title}>
-                        <SidebarMenuButton asChild
-                          onClick={() => scrollToPosition(heading.pos)}
-                        >
-                          <a href='#' className="font-medium">
-                            {heading.title}
-                          </a>
+                      <SidebarMenuItem key={element.textContent}>
+                        <SidebarMenuButton asChild onClick={(e) => scroll(e, element)}>
+                            <a href='#'>{element.textContent}</a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     )
                   }
 
-                  return (
-                    <SidebarMenuItem key={heading.title}>
+                  if (element.nodeName === 'H2') {
+                    return (
+                      <SidebarMenuItem key={element.textContent}>
                         <SidebarMenuSub>
-                          <SidebarMenuSubItem key={heading.title}>
-                            <SidebarMenuSubButton asChild isActive={true}>
-                              <a href='#'>{heading.title}</a>
+                          <SidebarMenuSubItem key={element.textContent}>
+                            <SidebarMenuSubButton asChild isActive={true}
+                              onClick={(e) => scroll(e, element)}
+                            >
+                              <a href='#'>{element.textContent}</a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         </SidebarMenuSub>
-                    </SidebarMenuItem>
-                  )
+                      </SidebarMenuItem>
+                    )
+                    }
                 })}
           </SidebarMenu>
         </SidebarGroup>
