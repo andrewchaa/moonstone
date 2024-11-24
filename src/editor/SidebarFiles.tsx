@@ -11,11 +11,8 @@ import {
   Sparkles,
 } from "lucide-react"
 
-import { NavFavorites } from "@/components/nav-favorites"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavWorkspaces } from "@/components/nav-workspaces"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/editor/nav-main"
+import { TeamSwitcher } from "@/editor/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +20,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
-import { NavOpenDocuments } from "@/components/nav-open-documents"
+import { NavOpenDocuments } from "@/editor/nav-open-documents"
 
 // This is sample data.
 const data = {
@@ -146,7 +143,7 @@ const data = {
   ],
 }
 
-export function SidebarLeft({
+export function SidebarFiles({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { openDocuments, setOpenDocuments, setActiveDocument } = useMoonstoneEditorContext()

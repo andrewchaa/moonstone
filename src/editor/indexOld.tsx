@@ -1,35 +1,22 @@
-import { SidebarLeft } from "@/components/sidebar-left"
-import { SidebarRight } from "@/components/sidebar-right"
-import { SidebarRight1 } from "@/components/sidebar-right-1"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
-import MultiTabs from "@/editor/MultiTabs"
-import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
-import { VaultFile } from "@/types/DocumentTypes"
-import { debounce } from "lodash"
-import { useCallback, useEffect, useState } from "react"
-import { SidebarRight2 } from "../../components/sidebar-right-2"
+import { useCallback, useEffect, useState } from 'react'
+import { debounce } from 'lodash'
 
-export function Page() {
+import { EditorDocument, VaultFile } from '@/types/DocumentTypes'
+import OpenDocumentDialog from '@/editor/OpenDocumentDialog'
+import '@/types/electronAPI'
+import MultiTabs from '@/editor/MultiTabs'
+import { SidebarProvider } from "@/components/ui/sidebar"
+import AppSidebar from "./AppSidebar"
+import { useMoonstoneEditorContext } from '@/context/MoonstoneEditorContext'
+
+export default function MoonstoneEditor() {
   const {
     vaultFiles,
     setVaultFiles,
     openDocuments,
-    setOpenDocuments,
-    activeDocument,
-    setActiveDocument,
+    setOpenDocuments
   } = useMoonstoneEditorContext()
+  const [activeDocument, setActiveDocument] = useState<EditorDocument>()
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
   const saveContent = useCallback(
@@ -116,34 +103,22 @@ export function Page() {
     })
   }, [openDocuments, activeDocument])
 
-
   return (
-    <SidebarProvider>
-      <SidebarLeft />
-      <SidebarInset>
-        <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
-          <div className="flex flex-1 items-center gap-2 px-3">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">
-                    {activeDocument?.name || 'Untitled'}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="mx-auto h-[100vh] w-full max-w-6xl bg-muted/50">
+    <div className="flex h-screen bg-background">
+      <SidebarProvider>
+        <AppSidebar
+          openDocuments={openDocuments}
+          setOpenDocuments={setOpenDocuments}
+          setActiveDocument={setActiveDocument}
+          vaultFiles={vaultFiles}
+        />
+        <main className="overflow-x-hidden w-full">
           <MultiTabs
             activeDocument={activeDocument || openDocuments[0]}
             setActiveDocument={setActiveDocument}
             closeFile={closeDocument}
             handleContentChange={handleContentChange}
           />
-
           <OpenDocumentDialog
             open={openDocumentDialogOpen}
             setOpen={setOpenDocumentDialogOpen}
@@ -162,12 +137,8 @@ export function Page() {
               setOpenDocumentDialogOpen(false)
             }}
           />
-
-          {/* <div className="mx-auto h-24 w-full max-w-3xl rounded-xl bg-muted/50" />
-          <div className="mx-auto h-[100vh] w-full max-w-3xl rounded-xl bg-muted/50" /> */}
-        </div>
-      </SidebarInset>
-      <SidebarRight2 />
-    </SidebarProvider>
+        </main>
+      </SidebarProvider>
+    </div>
   )
 }

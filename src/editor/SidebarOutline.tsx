@@ -1,8 +1,6 @@
 import * as React from "react"
 import { GalleryVerticalEnd } from "lucide-react"
 import { editorViewCtx } from '@milkdown/core';
-import { Selection } from '@milkdown/prose/state';
-import { outline } from "@milkdown/utils";
 
 import {
   Sidebar,
@@ -19,19 +17,17 @@ import {
 } from "@/components/ui/sidebar"
 import { useMoonstoneEditorContext } from "../context/MoonstoneEditorContext"
 
-export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { crepeInstance, documentHeadings } = useMoonstoneEditorContext()
+export function SidebarOutline({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { crepeInstance } = useMoonstoneEditorContext()
   const [headingElements, setHeadingElements] = React.useState<Element[]>([])
 
   React.useEffect(() => {
     const view = crepeInstance?.editor.ctx.get(editorViewCtx)
     const nodeList = view?.dom.querySelectorAll('h1, h2')
     setHeadingElements((nodeList ? Array.from(nodeList) : []))
-    console.log('headings', (nodeList ? Array.from(nodeList) : []))
   }, [crepeInstance?.editor.ctx])
 
-  const scroll = (e: Event,  element: Element) => {
-    e.preventDefault();
+  const scroll = (element: Element) => {
     element.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
@@ -80,32 +76,37 @@ export function SidebarRight2({ ...props }: React.ComponentProps<typeof Sidebar>
             {
               headingElements
                 .map((element) => {
-                  console.log('element', element.nodeName)
                   if (element.nodeName === 'H1') {
                     return (
-                      <SidebarMenuItem key={element.textContent}>
-                        <SidebarMenuButton asChild onClick={(e) => scroll(e, element)}>
-                            <a href='#'>{element.textContent}</a>
+                      <SidebarMenuItem key={`${element.nodeName}${element.textContent}`}>
+                        <SidebarMenuButton asChild
+                          onClick={e => {
+                            e.preventDefault();
+                            scroll(element)
+                          }}
+                        >
+                          <a href='#'>{element.textContent}</a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     )
                   }
 
-                  if (element.nodeName === 'H2') {
-                    return (
-                      <SidebarMenuItem key={element.textContent}>
-                        <SidebarMenuSub>
-                          <SidebarMenuSubItem key={element.textContent}>
-                            <SidebarMenuSubButton asChild isActive={true}
-                              onClick={(e) => scroll(e, element)}
-                            >
-                              <a href='#'>{element.textContent}</a>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        </SidebarMenuSub>
-                      </SidebarMenuItem>
-                    )
-                    }
+                  return (
+                    <SidebarMenuItem key={`${element.nodeName}${element.textContent}`}>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem key={element.textContent}>
+                          <SidebarMenuSubButton asChild isActive={true}
+                            onClick={e => {
+                              e.preventDefault();
+                              scroll(element)
+                            }}
+                          >
+                            <a href='#'>{element.textContent}</a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </SidebarMenuItem>
+                  )
                 })}
           </SidebarMenu>
         </SidebarGroup>

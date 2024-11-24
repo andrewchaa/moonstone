@@ -1,7 +1,6 @@
 import React from 'react';
-import MoonstoneEditor from '@/editor';
+import { MoonstoneEditor } from '@/editor/index';
 import { MoonstoneEditorContextProvider } from '@/context/MoonstoneEditorContext';
-import { Page } from '@/examples/two-sidebars'
 import './index.css';
 import '../globals.css';
 
@@ -9,8 +8,7 @@ import '../globals.css';
 const App: React.FC = () => {
   return (
     <MoonstoneEditorContextProvider>
-      {/* <MoonstoneEditor /> */}
-      <Page />
+      <MoonstoneEditor />
     </MoonstoneEditorContextProvider>
   );
 };
