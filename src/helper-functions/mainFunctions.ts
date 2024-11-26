@@ -166,7 +166,6 @@ export const registerIpcMainHandlers = async (
       if (!result.canceled && result.filePaths.length > 0) {
         const directoryPath = result.filePaths[0]
         store.set('vaultPath', directoryPath)
-        console.log('store', JSON.stringify(store))
 
         try {
           const files = await fs.readdir(directoryPath)
@@ -198,7 +197,6 @@ export const registerIpcMainHandlers = async (
     })
 
     ipcMain.handle('write-file', async (event, name, content) => {
-      console.log('Writing file:', name)
       const vaultPath = store.get('vaultPath') as string
       try {
         fs.writeFile(`${vaultPath}/${name}`, content, 'utf-8')

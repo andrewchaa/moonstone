@@ -12,7 +12,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
-import MultiTabs from "@/editor/MultiTabs"
 import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
 import { debounce } from "lodash"
@@ -31,6 +30,7 @@ export function MoonstoneEditor() {
   } = useMoonstoneEditorContext()
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
+  console.log('activeDocument', activeDocument)
   const saveContent = useCallback(
     debounce(async (name: string, content: string) => {
       await window.electronAPI.writeFile(name, content)

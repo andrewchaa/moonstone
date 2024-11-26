@@ -6,7 +6,6 @@ import { Selection } from '@milkdown/prose/state';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
 import "./crepe.css";
-import { DocumentHeading } from '@/types/DocumentTypes';
 import { useMoonstoneEditorContext } from '../context/MoonstoneEditorContext';
 
 type Props = {
@@ -68,7 +67,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
       crepe.destroy();
       setCrepeInstance(null);
     }
-  }, []);
+  }, [content]);
 
   return (<div className="crepe flex h-full flex-1 flex-col" ref={divRef} />)
 };
