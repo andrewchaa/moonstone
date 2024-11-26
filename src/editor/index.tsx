@@ -18,6 +18,7 @@ import { VaultFile } from "@/types/DocumentTypes"
 import { debounce } from "lodash"
 import { useCallback, useEffect, useState } from "react"
 import { SidebarOutline } from "./SidebarOutline"
+import CrepeEditor from "@/editor/Crepe"
 
 export function MoonstoneEditor() {
   const {
@@ -135,11 +136,16 @@ export function MoonstoneEditor() {
           </div>
         </header>
         <div className="mx-auto h-[100vh] w-full max-w-6xl bg-muted/50">
-          <MultiTabs
-            activeDocument={activeDocument || openDocuments[0]}
-            setActiveDocument={setActiveDocument}
-            closeFile={closeDocument}
-            handleContentChange={handleContentChange}
+          <CrepeEditor
+            content={activeDocument?.content || ''}
+            cursorPos={activeDocument?.cursorPos}
+            onChange={(markdown, selection) => {
+              if (!activeDocument) {
+                return
+              }
+
+              handleContentChange(activeDocument?.id, markdown, selection)
+            }}
           />
 
           <OpenDocumentDialog

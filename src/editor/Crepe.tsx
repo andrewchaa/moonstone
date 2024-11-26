@@ -13,10 +13,10 @@ type Props = {
   content: string
   cursorPos?: number
   onChange: (markdown: string, cursorPos: number) => void
-  onTocChange: (headings: DocumentHeading[]) => void
+  // onTocChange: (headings: DocumentHeading[]) => void
 }
 
-const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange, onTocChange }) => {
+const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
   const { setCrepeInstance } = useMoonstoneEditorContext();
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
