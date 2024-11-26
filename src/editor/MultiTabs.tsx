@@ -83,7 +83,7 @@ export default function   MultiTabs({
         </TabsList>
       </ScrollArea> */}
       {openDocuments.map((document) => (
-        <TabsContent key={document.id} value={document.id} className="flex-1 p-4 overflow-auto">
+        <TabsContent key={document.id} value={document.id}>
           {/* <div className="ml-14 flex items-center">
             {isEditingTitle ? (
               <Input
