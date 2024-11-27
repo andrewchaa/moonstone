@@ -30,7 +30,6 @@ export function MoonstoneEditor() {
   } = useMoonstoneEditorContext()
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
 
-  console.log('activeDocument', activeDocument)
   const saveContent = useCallback(
     debounce(async (name: string, content: string) => {
       await window.electronAPI.writeFile(name, content)
