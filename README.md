@@ -34,4 +34,8 @@ Processes in Electron
 - main: create and manage application windows with the `BrowserWindow` module
 - renderer: a separate renderer process for each open `BrowserWindow`
 - preload: contains code that executes in a rendrer process before its web content begins loading
-- keyboard shortcuts as example
+
+keyboard shortcuts as example
+- main: `menu.append(new MenuItem({}))`
+- preload: `contextBridge.exposeInMainWorld('electronAPI', {})`
+- renderer: `window.electronAPI.onOpenVault(() => openVault())`
