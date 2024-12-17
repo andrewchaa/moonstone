@@ -1,7 +1,7 @@
 import { KeyboardEvent, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import CrepeEditor from "@/editor/Crepe"
+import CrepeEditor from "@/editor/CrepeEditor"
 import { Edit2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"

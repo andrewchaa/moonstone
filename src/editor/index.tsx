@@ -17,7 +17,7 @@ import { VaultFile } from "@/types/DocumentTypes"
 import { debounce } from "lodash"
 import { useCallback, useEffect, useState } from "react"
 import { SidebarOutline } from "./SidebarOutline"
-import CrepeEditor from "@/editor/Crepe"
+import CrepeEditor from "@/editor/CrepeEditor"
 
 export function MoonstoneEditor() {
   const {
