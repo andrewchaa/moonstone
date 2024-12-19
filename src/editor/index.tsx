@@ -1,3 +1,6 @@
+import { debounce } from "lodash"
+import { useCallback, useEffect, useState } from "react"
+
 import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
   Breadcrumb,
@@ -14,8 +17,6 @@ import {
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
-import { debounce } from "lodash"
-import { useCallback, useEffect, useState } from "react"
 import { SidebarOutline } from "./SidebarOutline"
 import CrepeEditor from "@/editor/CrepeEditor"
 
@@ -112,6 +113,7 @@ export function MoonstoneEditor() {
         setActiveDocument(openDocuments[prevIndex]);
       }
     })
+
   }, [openDocuments, activeDocument])
 
 

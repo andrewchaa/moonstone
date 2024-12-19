@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, powerMonitor } from 'electron';
 import path from 'path';
 import Store from 'electron-store'
 
@@ -44,12 +44,24 @@ const createWindow = async () => {
     shell.openExternal(url);
     return { action: 'allow' }
   })
+
+  return mainWindow;
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', async () => {
+  await createWindow()
+
+  powerMonitor.on('suspend', () => {
+    console.log('The system is going to sleep')
+  })
+
+  powerMonitor.on('resume', () => {
+    console.log('The system is resuming from sleep')
+  })
+} );
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
