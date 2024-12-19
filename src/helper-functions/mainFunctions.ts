@@ -217,10 +217,16 @@ export const registerIpcMainHandlers = async (
   })
 
   ipcMain.handle('save-active-document', async (_, jsonContent) => {
-    store.set('activeDocument', jsonContent)
+    store.set('active-document', jsonContent)
   })
 
   ipcMain.handle('load-active-document', async () => {
-    return store.get('activeDocument')
+    try {
+      const activeDocument = JSON.parse(store.get('active-document') as string)
+      activeDocument.content = await fs.readFile(activeDocument.filePath, 'utf-8')
+      return JSON.stringify(activeDocument)
+    } catch (error) {
+      return '{}'
+    }
   })
 }

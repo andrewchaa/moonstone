@@ -78,11 +78,15 @@ export function MoonstoneEditor() {
   useEffect(() => {
     if (activeDocument) {
       (async () => {
-        await window.electronAPI.saveActiveDocument(JSON.stringify(activeDocument))
+        await window.electronAPI.saveActiveDocument(
+          JSON.stringify({ ...activeDocument, content: '' })
+        )
       })()
     } else {
       (async () => {
-        setActiveDocument(JSON.parse(await window.electronAPI.loadActiveDocument()))
+        setActiveDocument(
+          JSON.parse(await window.electronAPI.loadActiveDocument())
+        )
       })()
     }
   }, [activeDocument])
