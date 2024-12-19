@@ -76,6 +76,18 @@ export function MoonstoneEditor() {
   }
 
   useEffect(() => {
+    if (activeDocument) {
+      (async () => {
+        await window.electronAPI.saveActiveDocument(JSON.stringify(activeDocument))
+      })()
+    } else {
+      (async () => {
+        setActiveDocument(JSON.parse(await window.electronAPI.loadActiveDocument()))
+      })()
+    }
+  }, [activeDocument])
+
+  useEffect(() => {
     window.electronAPI.onOpenDocumentDialog((files) => {
       setVaultFiles(files)
       setOpenDocumentDialogOpen(true)

@@ -158,61 +158,69 @@ export const registerIpcMainHandlers = async (
   mainWindow: BrowserWindow,
   store: Store
 ) => {
-    ipcMain.handle('open-directory-selector', async () => {
-      const result = await dialog.showOpenDialog(mainWindow, {
-        properties: ['openDirectory']
-      })
+  ipcMain.handle('open-directory-selector', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+    })
 
-      if (!result.canceled && result.filePaths.length > 0) {
-        const directoryPath = result.filePaths[0]
-        store.set('vaultPath', directoryPath)
+    if (!result.canceled && result.filePaths.length > 0) {
+      const directoryPath = result.filePaths[0]
+      store.set('vaultPath', directoryPath)
 
-        try {
-          const files = await fs.readdir(directoryPath)
-          const documents = Promise.all(files
-            .filter((file) => !file.startsWith('.'))
-            .map(async (file: string) => ({
-              id: file,
-              name: file,
-              content: await fs.readFile(`${directoryPath}/${file}`, 'utf-8'),
-              filePath: `${directoryPath}/${file}`
-            })));
-          return documents
-        } catch (error) {
-          console.error('Error reading directory:', error)
-          return []
-        }
-      } else {
+      try {
+        const files = await fs.readdir(directoryPath)
+        const documents = Promise.all(files
+          .filter((file) => !file.startsWith('.'))
+          .map(async (file: string) => ({
+            id: file,
+            name: file,
+            content: await fs.readFile(`${directoryPath}/${file}`, 'utf-8'),
+            filePath: `${directoryPath}/${file}`
+          })));
+        return documents
+      } catch (error) {
+        console.error('Error reading directory:', error)
         return []
       }
-    })
+    } else {
+      return []
+    }
+  })
 
-    ipcMain.handle('read-file', async (event, filePath) => {
-      try {
-        const content = await fs.readFile(filePath, 'utf-8')
-        return content
-      } catch (error) {
-        return ''
-      }
-    })
+  ipcMain.handle('read-file', async (_, filePath) => {
+    try {
+      const content = await fs.readFile(filePath, 'utf-8')
+      return content
+    } catch (error) {
+      return ''
+    }
+  })
 
-    ipcMain.handle('write-file', async (event, name, content) => {
-      const vaultPath = store.get('vaultPath') as string
-      try {
-        fs.writeFile(`${vaultPath}/${name}`, content, 'utf-8')
-      } catch (error) {
-        console.error('Error writing file:', error)
-        throw error
-      }
-    })
+  ipcMain.handle('write-file', async (_, name, content) => {
+    const vaultPath = store.get('vaultPath') as string
+    try {
+      fs.writeFile(`${vaultPath}/${name}`, content, 'utf-8')
+    } catch (error) {
+      console.error('Error writing file:', error)
+      throw error
+    }
+  })
 
-    ipcMain.handle('delete-file', async (event, name) => {
-      const vaultPath = store.get('vaultPath') as string
-      try {
-        fs.unlink(`${vaultPath}/${name}`)
-      } catch (error) {
-        console.error('Error deleting file:', error)
-        throw error
-      }
-    })
-  }
+  ipcMain.handle('delete-file', async (_, name) => {
+    const vaultPath = store.get('vaultPath') as string
+    try {
+      fs.unlink(`${vaultPath}/${name}`)
+    } catch (error) {
+      console.error('Error deleting file:', error)
+      throw error
+    }
+  })
+
+  ipcMain.handle('save-active-document', async (_, jsonContent) => {
+    store.set('activeDocument', jsonContent)
+  })
+
+  ipcMain.handle('load-active-document', async () => {
+    return store.get('activeDocument')
+  })
+}
