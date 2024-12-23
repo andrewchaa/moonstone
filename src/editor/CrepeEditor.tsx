@@ -1,8 +1,12 @@
-import React, { MutableRefObject, useLayoutEffect, useRef } from 'react';
 import { Crepe } from '@milkdown/crepe';
+import { editorViewCtx, parserCtx } from '@milkdown/core';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
-import { editorViewCtx } from '@milkdown/core';
-import { Selection } from '@milkdown/prose/state';
+import { Slice } from '@milkdown/kit/prose/model';
+import { Selection } from '@milkdown/kit/prose/state';
+import { getMarkdown } from '@milkdown/kit/utils';
+import { eclipse } from '@uiw/codemirror-theme-eclipse'
+import { throttle } from 'lodash';
+import { FC, MutableRefObject, useLayoutEffect, useRef } from 'react';
 import "@milkdown/crepe/theme/common/style.css";
 import "@milkdown/crepe/theme/nord.css";
 import "./crepe.css";
@@ -15,10 +19,10 @@ type Props = {
   // onTocChange: (headings: DocumentHeading[]) => void
 }
 
-const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
-  const { setCrepeInstance } = useMoonstoneEditorContext();
+const CrepeEditor: FC<Props> = ({ content, cursorPos, onChange }) => {
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
+  const { setCrepeInstance } = useMoonstoneEditorContext();
 
   useLayoutEffect(() => {
     if (!divRef.current) {
@@ -28,11 +32,20 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
     const crepe = new Crepe({
       root: divRef.current,
       defaultValue: content,
+      featureConfigs: {
+        [Crepe.Feature.CodeMirror]: {
+          theme: eclipse
+        },
+        [Crepe.Feature.LinkTooltip]: {
+          onCopyLink: () => {
+            console.log('link copied');
+          }
+        }
+      },
     });
 
     crepe.editor.config((ctx) => {
-      ctx.get(listenerCtx)
-        .markdownUpdated((ctx, markdown) => {
+      ctx.get(listenerCtx).markdownUpdated(throttle((ctx, markdown) => {
           onChange(markdown, ctx.get(editorViewCtx).state.selection.from)
           // const doc = ctx.get(editorViewCtx).state.doc;
           // const headings: DocumentHeading[] = [];
@@ -46,7 +59,7 @@ const CrepeEditor: React.FC<Props> = ({ content, cursorPos, onChange }) => {
           // });
           // console.log(headings);
           // onTocChange(headings);
-        })
+        }, 200))
     })
     .use(listener)
 
