@@ -1,5 +1,6 @@
 import { debounce } from "lodash"
 import { useCallback, useEffect, useState } from "react"
+import { EllipsisVertical } from "lucide-react"
 
 import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
@@ -7,6 +8,7 @@ import {
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -19,6 +21,7 @@ import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
+import { filenameToTitle } from "@/utils/stringUtils"
 
 export function MoonstoneEditor() {
   const {
@@ -143,11 +146,24 @@ export function MoonstoneEditor() {
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">
-                    {activeDocument?.name || 'Untitled'}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
+                { openDocuments.map((doc) => {
+                    return (
+                      <>
+                        <BreadcrumbSeparator>
+                          <EllipsisVertical />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem key={doc.id}>
+                          <BreadcrumbPage
+                            className="line-clamp-1"
+                            onClick={() => setActiveDocument(doc)}
+                          >
+                            {filenameToTitle(doc.name)}
+                          </BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </>
+                    )
+                  })
+                }
               </BreadcrumbList>
             </Breadcrumb>
           </div>
@@ -184,8 +200,6 @@ export function MoonstoneEditor() {
             }}
           />
 
-          {/* <div className="mx-auto h-24 w-full max-w-3xl rounded-xl bg-muted/50" />
-          <div className="mx-auto h-[100vh] w-full max-w-3xl rounded-xl bg-muted/50" /> */}
         </div>
       </SidebarInset>
       <SidebarOutline />

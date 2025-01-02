@@ -1,9 +1,7 @@
 import { Crepe } from '@milkdown/crepe';
-import { editorViewCtx, parserCtx } from '@milkdown/core';
+import { editorViewCtx } from '@milkdown/core';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
-import { Slice } from '@milkdown/kit/prose/model';
 import { Selection } from '@milkdown/kit/prose/state';
-import { getMarkdown } from '@milkdown/kit/utils';
 import { eclipse } from '@uiw/codemirror-theme-eclipse'
 import { throttle } from 'lodash';
 import { FC, MutableRefObject, useLayoutEffect, useRef } from 'react';
