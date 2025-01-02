@@ -1,6 +1,5 @@
 import { debounce } from "lodash"
 import { useCallback, useEffect, useState } from "react"
-import { EllipsisVertical } from "lucide-react"
 
 import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
@@ -8,7 +7,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
@@ -23,6 +21,7 @@ import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
 import { filenameToTitle } from "@/utils/stringUtils"
+import Header from "@/editor/Header"
 
 export function MoonstoneEditor() {
   const {
@@ -141,34 +140,7 @@ export function MoonstoneEditor() {
     <SidebarProvider>
       <SidebarFiles />
       <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 bg-background">
-          <div className="flex flex-1 items-center gap-2 px-3">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                { openDocuments.map((doc) => {
-                    return (
-                      <>
-                        <BreadcrumbSeparator>
-                          <EllipsisVertical />
-                        </BreadcrumbSeparator>
-                        <BreadcrumbItem key={doc.id}>
-                          <BreadcrumbLink
-                            className="line-clamp-1"
-                            onClick={() => setActiveDocument(doc)}
-                          >
-                            <a href='#'>{filenameToTitle(doc.name)}</a>
-                          </BreadcrumbLink>
-                        </BreadcrumbItem>
-                      </>
-                    )
-                  })
-                }
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
+        <Header />
         <div className="mx-auto h-[100vh] w-full max-w-6xl bg-muted/50">
           <TheEditor
             content={activeDocument?.content || ''}
