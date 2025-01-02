@@ -19,7 +19,7 @@ type Props = {
   // onTocChange: (headings: DocumentHeading[]) => void
 }
 
-const CrepeEditor: FC<Props> = ({ content, cursorPos, onChange }) => {
+const TheEditor: FC<Props> = ({ content, cursorPos, onChange }) => {
   const crepeRef = useRef<Crepe>(null);
   const divRef = useRef<HTMLDivElement>(null);
   const { setCrepeInstance } = useMoonstoneEditorContext();
@@ -85,4 +85,4 @@ const CrepeEditor: FC<Props> = ({ content, cursorPos, onChange }) => {
   return (<div className="crepe flex h-full flex-1 flex-col" ref={divRef} />)
 };
 
-export default CrepeEditor;
+export default TheEditor;

@@ -18,7 +18,7 @@ import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
-import CrepeEditor from "@/editor/CrepeEditor"
+import TheEditor from "@/editor/TheEditor"
 
 export function MoonstoneEditor() {
   const {
@@ -153,7 +153,7 @@ export function MoonstoneEditor() {
           </div>
         </header>
         <div className="mx-auto h-[100vh] w-full max-w-6xl bg-muted/50">
-          <CrepeEditor
+          <TheEditor
             content={activeDocument?.content || ''}
             cursorPos={activeDocument?.cursorPos}
             onChange={(markdown, selection) => {

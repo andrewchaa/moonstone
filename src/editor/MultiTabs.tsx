@@ -1,7 +1,7 @@
 import { KeyboardEvent, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import CrepeEditor from "@/editor/CrepeEditor"
+import TheEditor from "@/editor/TheEditor"
 import { Edit2, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -101,7 +101,7 @@ export default function   MultiTabs({
             </Button>
           </div> */}
 
-          <CrepeEditor
+          <TheEditor
             content={document.content}
             cursorPos={document.cursorPos}
             onChange={(markdown, selection) => handleContentChange(
