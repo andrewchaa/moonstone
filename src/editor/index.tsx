@@ -6,6 +6,7 @@ import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -153,12 +154,12 @@ export function MoonstoneEditor() {
                           <EllipsisVertical />
                         </BreadcrumbSeparator>
                         <BreadcrumbItem key={doc.id}>
-                          <BreadcrumbPage
+                          <BreadcrumbLink
                             className="line-clamp-1"
                             onClick={() => setActiveDocument(doc)}
                           >
-                            {filenameToTitle(doc.name)}
-                          </BreadcrumbPage>
+                            <a href='#'>{filenameToTitle(doc.name)}</a>
+                          </BreadcrumbLink>
                         </BreadcrumbItem>
                       </>
                     )
