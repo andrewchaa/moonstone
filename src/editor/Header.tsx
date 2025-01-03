@@ -2,8 +2,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 import { filenameToTitle } from "@/utils/stringUtils"
-import { Separator } from "@radix-ui/react-separator"
-import { EllipsisVertical } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 
 export default function Header() {
   const {
@@ -30,7 +29,7 @@ export default function Header() {
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                   <BreadcrumbSeparator>
-                    <EllipsisVertical className="w-4 h-4" />
+                    <Separator orientation="vertical" className="mr-2 h-4" />
                   </BreadcrumbSeparator>
                 </>
               )
