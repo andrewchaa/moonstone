@@ -12,7 +12,7 @@ import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
 import Header from "@/editor/Header"
-import { useActiveDocumentEffect } from "@/hooks/useSerializationEffects"
+import { useActiveDocumentEffect, useOpenDocumentsEffect } from "@/hooks/useSerializationEffects"
 
 export function MoonstoneEditor() {
   const {
@@ -70,6 +70,7 @@ export function MoonstoneEditor() {
   }
 
   useActiveDocumentEffect(activeDocument, setActiveDocument)
+  useOpenDocumentsEffect(openDocuments, setOpenDocuments)
 
   useEffect(() => {
     window.electronAPI.onOpenDocumentDialog((files) => {

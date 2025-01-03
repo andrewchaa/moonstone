@@ -7,7 +7,8 @@ declare global {
       readFile: (filePath: string) => Promise<string>;
       deleteFile: (name: string) => Promise<void>;
       openDirectorySelector: () => Promise<VaultFile[]>;
-      storeKeyValue: (key: string, value: string) => Promise<void>;
+      serializeKeyValue: (key: string, value: string) => Promise<void>;
+      deserializeKeyValue: (key: string) => Promise<string>;
       loadActiveDocument: () => Promise<string>;
 
       onOpenDocumentDialog: (callback: (files: VaultFile[]) => void) => void;

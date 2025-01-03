@@ -216,8 +216,12 @@ export const registerIpcMainHandlers = async (
     }
   })
 
-  ipcMain.handle('store-key-value', async (_, key, value) => {
+  ipcMain.handle('serialize-key-value', async (_, key, value) => {
     store.set(key, value)
+  })
+
+  ipcMain.handle('deserialize-key-value', async (_, key) => {
+    return store.get(key)
   })
 
   ipcMain.handle('load-active-document', async () => {
