@@ -40,7 +40,14 @@ async function deserialiseActiveDocumentDetails(setActiveDocument: (doc: EditorD
 }
 
 async function deserialiseOpenDocumentDetails(setOpenDocuments: (docs: EditorDocument[]) => void) {
+  const docs = JSON.parse(await window.electronAPI.deserializeKeyValue('open-documents'));
+  const openDocuments = await Promise.all(
+    docs.map(async (doc: EditorDocument) => ({
+      ...doc,
+      content: await window.electronAPI.readFile(doc.filePath)
+    }))
+  );
   setOpenDocuments(
-    JSON.parse(await window.electronAPI.deserializeKeyValue('open-documents'))
+    openDocuments
   );
 }
