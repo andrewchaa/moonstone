@@ -12,6 +12,7 @@ import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
 import Header from "@/editor/Header"
+import { useActiveDocumentEffect } from "@/hooks/useSerializationEffects"
 
 export function MoonstoneEditor() {
   const {
@@ -68,21 +69,7 @@ export function MoonstoneEditor() {
     setVaultFiles([...vaultFiles, ...newFiles])
   }
 
-  useEffect(() => {
-    if (activeDocument) {
-      (async () => {
-        await window.electronAPI.saveActiveDocument(
-          JSON.stringify({ ...activeDocument, content: '' })
-        )
-      })()
-    } else {
-      (async () => {
-        setActiveDocument(
-          JSON.parse(await window.electronAPI.loadActiveDocument())
-        )
-      })()
-    }
-  }, [activeDocument])
+  useActiveDocumentEffect(activeDocument, setActiveDocument)
 
   useEffect(() => {
     window.electronAPI.onOpenDocumentDialog((files) => {

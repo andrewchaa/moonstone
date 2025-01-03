@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
   writeFile: (name: string, content: string) => ipcRenderer.invoke('write-file', name, content),
   deleteFile: (name: string) => ipcRenderer.invoke('delete-file', name),
-  saveActiveDocument: (jsonContent: string) => ipcRenderer.invoke('save-active-document', jsonContent),
+  storeKeyValue: (key: string, value: string) => ipcRenderer.invoke('store-key-value', key, value),
   loadActiveDocument: () => ipcRenderer.invoke('load-active-document'),
 
   onOpenDocumentDialog: (callback: any) => ipcRenderer.on('open-document-dialog', (_event, files) => callback(files)),

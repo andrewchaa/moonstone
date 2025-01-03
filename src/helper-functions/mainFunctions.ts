@@ -216,8 +216,8 @@ export const registerIpcMainHandlers = async (
     }
   })
 
-  ipcMain.handle('save-active-document', async (_, jsonContent) => {
-    store.set('active-document', jsonContent)
+  ipcMain.handle('store-key-value', async (_, key, value) => {
+    store.set(key, value)
   })
 
   ipcMain.handle('load-active-document', async () => {
