@@ -3,24 +3,14 @@ import { useCallback, useEffect, useState } from "react"
 
 import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useMoonstoneEditorContext } from "@/context/MoonstoneEditorContext"
 import OpenDocumentDialog from "@/editor/OpenDocumentDialog"
 import { VaultFile } from "@/types/DocumentTypes"
 import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
-import { filenameToTitle } from "@/utils/stringUtils"
 import Header from "@/editor/Header"
 
 export function MoonstoneEditor() {
