@@ -1,5 +1,5 @@
 import { debounce } from "lodash"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { SidebarFiles } from "@/editor/SidebarFiles"
 import {
@@ -13,6 +13,9 @@ import { SidebarOutline } from "./SidebarOutline"
 import TheEditor from "@/editor/TheEditor"
 import Header from "@/editor/Header"
 import { useActiveDocumentEffect, useOpenDocumentsEffect } from "@/hooks/useSerializationEffects"
+import { useElectronAPI } from "@/hooks/use-electron-apis"
+import NewDocumentDialog from "@/components/new-document-dialog"
+
 
 export function MoonstoneEditor() {
   const {
@@ -24,12 +27,10 @@ export function MoonstoneEditor() {
     setActiveDocument,
   } = useMoonstoneEditorContext()
   const [openDocumentDialogOpen, setOpenDocumentDialogOpen] = useState(false)
-
   const saveContent = useCallback(
     debounce(async (name: string, content: string) => {
       await window.electronAPI.writeFile(name, content)
-    },
-      3000
+    }, 3000
     ), [openDocuments]
   )
 
@@ -71,48 +72,11 @@ export function MoonstoneEditor() {
 
   useActiveDocumentEffect(activeDocument, setActiveDocument)
   useOpenDocumentsEffect(openDocuments, setOpenDocuments)
-
-  useEffect(() => {
-    window.electronAPI.onOpenDocumentDialog((files) => {
-      setVaultFiles(files)
-      setOpenDocumentDialogOpen(true)
-    })
-    window.electronAPI.onLoadVault((files: VaultFile[]) => setVaultFiles(files))
-    window.electronAPI.onOpenVault(() => openVault())
-    window.electronAPI.onCloseDocument(() => {
-      if (activeDocument) {
-        closeDocument(activeDocument?.id)
-      }
-    })
-    window.electronAPI.onOpenDocument((file: VaultFile) => {
-      if (!openDocuments.some(doc => doc.id === file.name)) {
-        const newDocument = {
-          id: file.name,
-          name: file.name,
-          content: '',
-          filePath: file.filePath,
-        }
-        setOpenDocuments([...openDocuments, newDocument])
-        setActiveDocument(newDocument)
-      }
-    })
-    window.electronAPI.onSwitchDocument(() => {
-      if (openDocuments.length > 1 && activeDocument) {
-        const currentIndex = openDocuments.findIndex(doc => doc.id === activeDocument.id)
-        const nextIndex = currentIndex === openDocuments.length - 1 ? 0 : currentIndex + 1
-        setActiveDocument(openDocuments[nextIndex])
-      }
-    })
-    window.electronAPI.onReverseSwitchDocument(() => {
-      if (openDocuments.length > 1 && activeDocument) {
-        const currentIndex = openDocuments.findIndex(doc => doc.id === activeDocument.id);
-        const prevIndex = currentIndex === 0 ? openDocuments.length - 1 : currentIndex - 1;
-        setActiveDocument(openDocuments[prevIndex]);
-      }
-    })
-
-  }, [openDocuments, activeDocument])
-
+  useElectronAPI(
+    setOpenDocumentDialogOpen,
+    openVault,
+    closeDocument
+  );
 
   return (
     <SidebarProvider>
@@ -151,8 +115,11 @@ export function MoonstoneEditor() {
             }}
           />
 
+          <NewDocumentDialog />
+
         </div>
       </SidebarInset>
+
       <SidebarOutline />
     </SidebarProvider>
   )

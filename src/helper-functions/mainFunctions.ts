@@ -26,18 +26,7 @@ export const configureMenus = (
         label: 'New document',
         accelerator: 'CmdOrCtrl+n',
         click: () => {
-          const vaultPath = store.get('vaultPath') as string
-          if (vaultPath) {
-            const valutFile = {
-              name: 'new-document.md',
-              filePath: `${vaultPath}/new-document.md`,
-              lastModified: new Date().toISOString()
-            }
-            fs.writeFile(valutFile.filePath, '')
-            mainWindow.webContents.send('open-document', valutFile)
-          } else {
-            dialog.showErrorBox('Error', 'No vault selected')
-          }
+          mainWindow.webContents.send('new-document')
         }
       },
       {
@@ -198,8 +187,11 @@ export const registerIpcMainHandlers = async (
 
   ipcMain.handle('write-file', async (_, name, content) => {
     const vaultPath = store.get('vaultPath') as string
+    const filename = `${vaultPath}/${name}`
+
     try {
-      fs.writeFile(`${vaultPath}/${name}`, content, 'utf-8')
+      fs.writeFile(filename, content, 'utf-8')
+      return filename;
     } catch (error) {
       console.error('Error writing file:', error)
       throw error
